@@ -1,15 +1,16 @@
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
-abstract class BottomNavState extends Equatable {
-  const BottomNavState();
+abstract class AuthenticationState extends Equatable {
+  const AuthenticationState();
 }
 
-class CurrentIndexChanged extends BottomNavState {
+class Authenticated extends AuthenticationState {
 
-  final int currentIndex;
-
-  CurrentIndexChanged({@required this.currentIndex});
+//  final FirebaseUser user;
+//
+//  Authenticated({@required this.user});
 
 
   @override
@@ -18,7 +19,7 @@ class CurrentIndexChanged extends BottomNavState {
 
 }
 
-class PageLoading extends BottomNavState {
+class Unknown extends AuthenticationState {
 
   @override
   String toString() => 'PageLoading';
@@ -29,9 +30,10 @@ class PageLoading extends BottomNavState {
 
 }
 
-class HomePageLoaded extends BottomNavState {
+class UnAuthenticated extends AuthenticationState {
 
-
+  @override
+  String toString() => 'PageLoading';
 
   @override
   // TODO: implement props
@@ -39,9 +41,7 @@ class HomePageLoaded extends BottomNavState {
 
 }
 
-class ProfilePageLoaded extends BottomNavState {
-
-
+class AuthenticationError extends AuthenticationState {
 
   @override
   // TODO: implement props
@@ -49,13 +49,5 @@ class ProfilePageLoaded extends BottomNavState {
 
 }
 
-class FavouritesPageLoaded extends BottomNavState {
 
-
-
-  @override
-  // TODO: implement props
-  List<Object> get props => throw UnimplementedError();
-
-}
 

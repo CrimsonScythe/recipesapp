@@ -4,9 +4,10 @@ import 'package:recipes/src/blocs/bottomnav/bottomnav_bloc.dart';
 import 'package:recipes/src/blocs/bottomnav/bottomnav_event.dart';
 import 'package:recipes/src/blocs/bottomnav/bottomnav_state.dart';
 import 'package:recipes/src/blocs/dailyRecipes/dailyRecipes_state.dart';
-import 'package:recipes/src/blocs/dailyrecipes_bloc.dart';
+import 'package:recipes/src/blocs/dailyRecipes/dailyrecipes_bloc.dart';
 import 'package:recipes/src/screens/favourites_screen.dart';
 import 'package:recipes/src/screens/home_screen.dart';
+import 'package:recipes/src/screens/profile_screen.dart';
 
 
 class AppScreen extends StatelessWidget {
@@ -18,8 +19,10 @@ class AppScreen extends StatelessWidget {
       body: BlocBuilder<BottomNavBloc, BottomNavState>(
           builder: (context, state) {
             if (state is PageLoading) {
+
               return Center(child: CircularProgressIndicator(),);
             }
+
             if (state is HomePageLoaded) {
               return BlocProvider(
                 create: (_) => DailyRecipesBloc(),
@@ -29,6 +32,9 @@ class AppScreen extends StatelessWidget {
             }
             if (state is FavouritesPageLoaded) {
               return FavouritesScreen();
+            }
+            if (state is ProfilePageLoaded) {
+              return ProfileScreen();
             }
             return Container();
           },
@@ -48,6 +54,10 @@ class AppScreen extends StatelessWidget {
                 icon: Icon(Icons.favorite),
                 title: Text('Favourites')
               ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                title: Text('Profile')
+              )
 //              BottomNavigationBarItem(),
             ],
             onTap: (index) => BlocProvider.of<BottomNavBloc>(context).add(PageTapped(index: index)),

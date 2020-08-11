@@ -18,3 +18,4 @@ class PageTapped extends BottomNavEvent {
   List<Object> get props => throw UnimplementedError();
 
 }
+

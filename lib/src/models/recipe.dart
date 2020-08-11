@@ -11,17 +11,21 @@ class Recipe{
   final List<dynamic> _nutrition;
   final String _timeis;
   final String _typeis;
-  final String _id;
+  String _id;
 
   Recipe(this._title, this._url, this._ingredients, this._serve, this._img,
       this._instructions, this._nutrition, this._timeis, this._typeis, this._id);
 
   String get id => _id;
   String get img => _img;
-
+  String get title => _title;
 
   set img(String value) {
     _img = value;
+  }
+
+  set id(String value) {
+    _id = value;
   }
 
   Recipe.fromJson(Map<String, dynamic> json)

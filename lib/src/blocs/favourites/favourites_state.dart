@@ -1,15 +1,40 @@
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
-abstract class BottomNavState extends Equatable {
-  const BottomNavState();
+abstract class FavouritesState extends Equatable {
+  const FavouritesState();
 }
 
-class CurrentIndexChanged extends BottomNavState {
+class FavouritesInitial extends FavouritesState {
 
-  final int currentIndex;
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
 
-  CurrentIndexChanged({@required this.currentIndex});
+}
+
+class FavouritesRetrieved extends FavouritesState {
+
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+
+}
+
+class FavouritesFailure extends FavouritesState {
+
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+
+}
+
+class FavouriteAdded extends FavouritesState {
+
+//  final FirebaseUser user;
+//
+//  Authenticated({@required this.user});
 
 
   @override
@@ -18,20 +43,8 @@ class CurrentIndexChanged extends BottomNavState {
 
 }
 
-class PageLoading extends BottomNavState {
 
-  @override
-  String toString() => 'PageLoading';
-
-  @override
-  // TODO: implement props
-  List<Object> get props => throw UnimplementedError();
-
-}
-
-class HomePageLoaded extends BottomNavState {
-
-
+class FavouriteRemoved extends FavouritesState {
 
   @override
   // TODO: implement props
@@ -39,23 +52,5 @@ class HomePageLoaded extends BottomNavState {
 
 }
 
-class ProfilePageLoaded extends BottomNavState {
 
-
-
-  @override
-  // TODO: implement props
-  List<Object> get props => throw UnimplementedError();
-
-}
-
-class FavouritesPageLoaded extends BottomNavState {
-
-
-
-  @override
-  // TODO: implement props
-  List<Object> get props => throw UnimplementedError();
-
-}
 

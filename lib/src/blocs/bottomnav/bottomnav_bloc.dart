@@ -3,7 +3,7 @@ import 'package:recipes/src/blocs/bottomnav/bottomnav_event.dart';
 import 'package:recipes/src/blocs/bottomnav/bottomnav_state.dart';
 
 class BottomNavBloc extends Bloc<BottomNavEvent, BottomNavState> {
-  BottomNavBloc(BottomNavState initialState) : super(initialState);
+  BottomNavBloc() : super(HomePageLoaded());
   int currentIndex = 0;
   @override
   Stream<BottomNavState> mapEventToState(BottomNavEvent event) async* {
@@ -21,7 +21,13 @@ class BottomNavBloc extends Bloc<BottomNavEvent, BottomNavState> {
         yield FavouritesPageLoaded();
       }
 
+      if (this.currentIndex == 2){
+        /// inject data into favouritespageloaded()
+        yield ProfilePageLoaded();
+      }
+
     }
+
   }
 
 }

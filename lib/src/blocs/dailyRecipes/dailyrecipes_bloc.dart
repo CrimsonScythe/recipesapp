@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:recipes/resources/repository.dart';
 import 'package:recipes/src/models/recipe.dart';
-import 'dailyRecipes/dailyRecipes_state.dart';
+import 'dailyRecipes_state.dart';
 
 enum dRecipesEvent {  dRecipesRequested }
 
@@ -44,16 +44,5 @@ class DailyRecipesBloc extends Bloc<dRecipesEvent, DailyRecipesState> {
     return recipesList;
   }
 
-  Stream<DailyRecipesState> _setRecipes() async* {
-
-    //todo: try - catch here ????
-    final recipeDocs = await _repository.getDailyRecipes();
-    await _repository.setDailyRecipes(recipeDocs.documents);
-
-//    final recipeDocs = _repository.getDailyRecipes().then((value) {
-//      _repository.setDailyRecipes(value.documents);
-//    });
-
-  }
 
 }

@@ -94,7 +94,17 @@ class DataProvider {
 
       /// create Recipe object from firebase data
       final recipetoJ = Recipe.fromJson(recipe.data);
+      /// change image path to reflect local path storage
       recipetoJ.img=filesaved.path;
+
+//      print('id');
+//      print(recipe.documentID);
+//      print('reference');
+      print(recipe.reference.path);
+//      print(recipe.reference.path.split('/')[1]);
+      /// add id from docID because didnt do it in python
+      recipetoJ.id=recipe.reference.path;
+      print(recipetoJ.id);
       print('printed');
       /// encode json
       String json = jsonEncode(recipetoJ);
