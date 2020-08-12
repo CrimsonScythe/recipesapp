@@ -13,12 +13,14 @@ class RecipesInitial extends DailyRecipesState {}
 class RecipesLoadInProgress extends DailyRecipesState {}
 
 class RecipesLoadSuccess extends DailyRecipesState {
+
   final List<Recipe> recipes;
+  final List<String> favourites;
 
 //  RecipesLoadSuccess(this.recipes);
 
 
-  const RecipesLoadSuccess([this.recipes = const []]);
+  const RecipesLoadSuccess(this.favourites, [this.recipes = const []]);
 
   @override
   List<Object> get props => recipes;

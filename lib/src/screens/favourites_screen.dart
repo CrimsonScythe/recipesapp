@@ -19,6 +19,7 @@ class FavouritesScreen extends StatelessWidget {
 //            state.recipes
             return Column(
               children: <Widget>[
+                Text(state.favList[0].title),
                 Center(child: Text('SUCCESS'),),
                 FlatButton(onPressed: () => null , child: null)
               ],

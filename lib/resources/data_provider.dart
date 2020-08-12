@@ -7,6 +7,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:image_downloader/image_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:recipes/src/models/recipe.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../src/constants.dart' as Constants;
 import 'package:intl/intl.dart';
 
@@ -54,10 +55,66 @@ class DataProvider {
 
 
 
-  void _setRecipeImg() {
+  /// save to shared pref
+  /// overwritten automat.
+  Future<void> setFavourite(recipeID) async {
+
+    List<String> strList;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey('FAV')) {
+      strList = prefs.getStringList('FAV');
+      for (final k in strList) {
+        print(k);
+      }
+      if (strList.length==3){
+        await prefs.clear();
+        strList.add(recipeID);
+        await prefs.setStringList('FAV', strList);
+      } else {
+        strList.add(recipeID);
+        await prefs.setStringList('FAV', strList);
+      }
+    } else {
+      List<String> strList = new List<String>();
+      strList.add(recipeID);
+      await prefs.setStringList('FAV', strList);
+    }
+
 
   }
 
+  Future<bool> deleteFavourite(recipeID) async {
+    List<String> strList;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey('FAV')){
+      strList = prefs.getStringList('FAV');
+      strList.removeWhere((element) => element==recipeID);
+      return await prefs.setStringList('FAV', strList);
+    } else {
+      return false;
+    }
+  }
+
+  Future<List<String>> getFavouritesSharedPref() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey('FAV')){
+      return prefs.getStringList('FAV');
+    } else {
+      return new List<String>();
+    }
+  }
+
+  Future<bool> existFavourite(recipeID) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey('FAV')){
+      final strList = prefs.getStringList('FAV');
+      return strList.contains(recipeID);
+    } else {
+      return false;
+    }
+  }
+
+  /// save to localstorage
   Future<String> setDailyRecipes(List<DocumentSnapshot> recipeSnapshots) async {
 //    final documentSnapshot = List<DocumentSnapshot>();
 

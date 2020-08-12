@@ -20,6 +20,30 @@ class RemoveFavourite extends FavouritesEvent {
 
 }
 
+class FavouriteSharedNotAdded extends FavouritesEvent {
+
+
+
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+
+
+
+}
+
+class FavouriteSharedAdded extends FavouritesEvent {
+
+
+
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+
+
+
+}
+
 class AddFavourite extends FavouritesEvent {
 
   final recipeID;

@@ -20,9 +20,12 @@ class DailyRecipesBloc extends Bloc<dRecipesEvent, DailyRecipesState> {
       /// otherwise fetch
         yield RecipesLoadInProgress();
         try {
+          /// get recipes
           final listRecipes = await loadRecipes();
-          print('almost');
-          yield RecipesLoadSuccess(listRecipes);
+          /// get favourites
+          // todo: favourites are not actually used, so no need to return?
+          final favourites = await _repository.getFavouritesSharedPref();
+          yield RecipesLoadSuccess(favourites, listRecipes);
         } catch (_) {
           yield RecipesLoadFailure();
         }

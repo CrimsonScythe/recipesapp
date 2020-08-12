@@ -47,10 +47,12 @@ class FirestoreProvider{
   Future<void> deleteFavourite(uID, recipeID) async {
     /// query document using the recipeid.
     /// then delete the document
+    print('recipeID');
+    print(recipeID);
     final querySnap = await _firestore.collection("users").document(uID).collection("favourites")
         .where('reciperef', isEqualTo: recipeID).getDocuments();
     final docID = querySnap.documents[0].documentID;
-    await _firestore.collection("users").document(docID).delete();
+    await _firestore.collection("users").document(uID).collection("favourites").document(docID).delete();
 
   }
 
@@ -58,7 +60,7 @@ class FirestoreProvider{
   /// returns list<Recipe>
   Future<List<Recipe>> getFavourites(uID) async {
 
-    List<Recipe> recipesList;
+    List<Recipe> recipesList = List<Recipe>();
     /// recipeID contains doc refrerence to recipe
     /// order by ctime
     final querySnaps = await _firestore.collection("users").document(uID).collection("favourites").orderBy('ctime', descending: true)

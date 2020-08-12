@@ -13,7 +13,7 @@ class Repository {
   final _dataProvider = DataProvider();
 
   User user;
-
+  List<String> favouritesList;
 
 
   factory Repository() {
@@ -37,10 +37,27 @@ class Repository {
   Future<void> addUser(user) =>
     _firestoreProvider.addUser(user);
 
-  Future<void> addFavourite(uID, recipeID) {
-    _firestoreProvider.setFavourite(uID, recipeID);
-  }
+  /// to db
+  Future<void> addFavourite(uID, recipeID) =>
+     _firestoreProvider.setFavourite(uID, recipeID);
 
+
+  /// to shared pref
+  Future<void> setFavourite(recipeID) async {
+    await _dataProvider.setFavourite(recipeID);
+    _repository.favouritesList = await _repository.getFavouritesSharedPref();
+  }
+  Future<bool> deleteFavourite(recipeID) async {
+      final bol = await _dataProvider.deleteFavourite(recipeID);
+      _repository.favouritesList = await _repository.getFavouritesSharedPref();
+      return bol;
+  }
+  /// check if favourite exists
+  Future<bool> existFavourite(recipeID) =>
+    _dataProvider.existFavourite(recipeID);
+
+  Future<List<String>> getFavouritesSharedPref() =>
+  _dataProvider.getFavouritesSharedPref();
 
   Future<void> removeFavourite(uID, recipeID) =>
   _firestoreProvider.deleteFavourite(uID, recipeID);

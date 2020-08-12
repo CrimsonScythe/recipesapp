@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recipes/resources/repository.dart';
+import 'package:recipes/src/blocs/dailyRecipes/dailyrecipes_bloc.dart';
 import 'package:recipes/src/blocs/favourites/favourites_bloc.dart';
 import 'package:recipes/src/blocs/favourites/favourites_event.dart';
 import 'package:recipes/src/blocs/favourites/favourites_state.dart';
@@ -9,6 +11,7 @@ class DailyRecipeScreen extends StatelessWidget {
 
   final Recipe recipe;
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,6 +19,11 @@ class DailyRecipeScreen extends StatelessWidget {
         preferredSize: const Size(double.infinity, kToolbarHeight),
         child: BlocBuilder<FavouritesBloc, FavouritesState>(
           builder: (context, state) {
+            if (BlocProvider.of<FavouritesBloc>(context).existFavourite(recipe.id)) {
+              BlocProvider.of<FavouritesBloc>(context).add(FavouriteSharedAdded());
+            } else {
+              BlocProvider.of<FavouritesBloc>(context).add(FavouriteSharedNotAdded());
+            }
             return AppBar(
               actions: <Widget>[
                 IconButton(

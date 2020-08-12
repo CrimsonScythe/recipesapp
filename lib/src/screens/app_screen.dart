@@ -5,6 +5,7 @@ import 'package:recipes/src/blocs/bottomnav/bottomnav_event.dart';
 import 'package:recipes/src/blocs/bottomnav/bottomnav_state.dart';
 import 'package:recipes/src/blocs/dailyRecipes/dailyRecipes_state.dart';
 import 'package:recipes/src/blocs/dailyRecipes/dailyrecipes_bloc.dart';
+import 'package:recipes/src/blocs/favourites/favourites_bloc.dart';
 import 'package:recipes/src/screens/favourites_screen.dart';
 import 'package:recipes/src/screens/home_screen.dart';
 import 'package:recipes/src/screens/profile_screen.dart';
@@ -24,14 +25,29 @@ class AppScreen extends StatelessWidget {
             }
 
             if (state is HomePageLoaded) {
+//              return MultiBlocProvider(
+//                providers: [
+//                  BlocProvider<DailyRecipesBloc>(
+//                    create: (BuildContext context) => DailyRecipesBloc(),
+//                  ),
+//                  BlocProvider<FavouritesBloc>(
+//                    create: (BuildContext context) => FavouritesBloc(),
+//                  ),
+//                ],
+//                child: HomeScreen(),
+//              );
               return BlocProvider(
                 create: (_) => DailyRecipesBloc(),
                 child: HomeScreen(),
               );
-//              return HomeScreen();
+              return HomeScreen();
             }
             if (state is FavouritesPageLoaded) {
-              return FavouritesScreen();
+              return BlocProvider(
+                create: (_) => FavouritesBloc(),
+                child: FavouritesScreen(),
+              );
+//              return FavouritesScreen();
             }
             if (state is ProfilePageLoaded) {
               return ProfileScreen();
