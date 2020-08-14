@@ -19,6 +19,9 @@ class Recipe{
   String get id => _id;
   String get img => _img;
   String get title => _title;
+  String get serve => _serve;
+  List<dynamic> get ingredients => _ingredients;
+  String get time => _timeis;
 
   set img(String value) {
     _img = value;

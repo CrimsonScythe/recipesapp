@@ -14,13 +14,24 @@ class Repository {
 
   User user;
   List<String> favouritesList;
-
+  List<String> ingredients = new List<String>();
 
   factory Repository() {
     return _repository;
   }
 
   Repository._internal();
+
+  List<String> addIngredient(ingredient) {
+    ingredients.add(ingredient);
+    return ingredients;
+  }
+
+  List<String> removeIngredient(ingredient) {
+    ingredients.remove(ingredient);
+    return ingredients;
+  }
+
 
   Future<QuerySnapshot> getDailyRecipes() =>
       _firestoreProvider.getDailyRecipes();

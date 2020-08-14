@@ -23,7 +23,12 @@ class BottomNavBloc extends Bloc<BottomNavEvent, BottomNavState> {
 
       if (this.currentIndex == 2){
         /// inject data into favouritespageloaded()
+        yield ShoppingPageLoaded();
+      }
+
+      if (this.currentIndex == 3) {
         yield ProfilePageLoaded();
+
       }
 
     }

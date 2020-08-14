@@ -9,6 +9,7 @@ import 'package:recipes/src/blocs/favourites/favourites_bloc.dart';
 import 'package:recipes/src/screens/favourites_screen.dart';
 import 'package:recipes/src/screens/home_screen.dart';
 import 'package:recipes/src/screens/profile_screen.dart';
+import 'package:recipes/src/screens/shopping_screen.dart';
 
 
 class AppScreen extends StatelessWidget {
@@ -25,17 +26,7 @@ class AppScreen extends StatelessWidget {
             }
 
             if (state is HomePageLoaded) {
-//              return MultiBlocProvider(
-//                providers: [
-//                  BlocProvider<DailyRecipesBloc>(
-//                    create: (BuildContext context) => DailyRecipesBloc(),
-//                  ),
-//                  BlocProvider<FavouritesBloc>(
-//                    create: (BuildContext context) => FavouritesBloc(),
-//                  ),
-//                ],
-//                child: HomeScreen(),
-//              );
+
               return BlocProvider(
                 create: (_) => DailyRecipesBloc(),
                 child: HomeScreen(),
@@ -49,6 +40,9 @@ class AppScreen extends StatelessWidget {
               );
 //              return FavouritesScreen();
             }
+            if (state is ShoppingPageLoaded){
+              return ShoppingScreen();
+            }
             if (state is ProfilePageLoaded) {
               return ProfileScreen();
             }
@@ -61,14 +55,20 @@ class AppScreen extends StatelessWidget {
 //          return (state is PageLoading) ? Container() :
         return BottomNavigationBar(
             currentIndex: BlocProvider.of<BottomNavBloc>(context).currentIndex,
+            selectedItemColor: Colors.blue,
+            unselectedItemColor: Colors.grey,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home,),
-                title: Text('Home')
+                title: Text('Home'),
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.favorite),
                 title: Text('Favourites')
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.shopping_basket),
+                title: Text('Shopping')
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.person),

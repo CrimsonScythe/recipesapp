@@ -29,6 +29,16 @@ class PageLoading extends BottomNavState {
 
 }
 
+class ShoppingPageLoaded extends BottomNavState {
+
+
+
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+
+}
+
 class HomePageLoaded extends BottomNavState {
 
 
