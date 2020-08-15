@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recipes/src/blocs/detailRecipes/detailrecipe_bloc.dart';
@@ -16,13 +15,15 @@ class RecipeDetailScreen extends StatelessWidget {
 
   final Recipe recipe;
 
+//  List<Widget> ingredients;
+
   RecipeDetailScreen({Key key, this.recipe}) : super(key: key);
 
-//  List<Widget> ingredients;
 
   @override
   Widget build(BuildContext context) {
 //    ingredients = createIngredients();
+
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (context, bool innerBoxIsScrolled) {
@@ -53,11 +54,9 @@ class RecipeDetailScreen extends StatelessWidget {
           ];
         },
         body:
-            BlocBuilder<DetailRecipeBloc, int>(
-                builder: (context, state) {
-                  return localWidget(context);
-                }
-            )
+
+                  localWidget(context)
+
       )
     );
   }
@@ -76,15 +75,19 @@ class RecipeDetailScreen extends StatelessWidget {
 //    ).toList();
 
 
-//    List<Widget> Ingredients = recipe.ingredients.map((e) =>
-//        GridTile(
-//          child: Container(child: InkWell(child: state is IngredientSelected? Image.asset('assets/ing_images/004-fish.png'):Image.asset('assets/ing_images/001-jam.png'),
-//            onTap: (){
-//              BlocProvider.of<ShoppingBloc>(context).add(state is IngredientSelected? DeselectIngredient(e.toString()) : SelectIngredient(e.toString()));
-//            },),
-//            margin: EdgeInsets.all(25),),
-//          footer: Text(e.toString(), textAlign: TextAlign.center),
-//        )
+//   return recipe.ingredients.map((e) =>
+//    BlocBuilder<ShoppingBloc, ShoppingState>(
+//        builder: (context, state) {
+//          return GridTile(
+//            child: Container(child: InkWell(child:state is IngredientSelected && state.keys.contains(e.toString()) ? Image.asset('assets/ing_images/004-fish.png'):Image.asset('assets/ing_images/001-jam.png'),
+//              onTap: (){
+//                BlocProvider.of<ShoppingBloc>(context).add(state is IngredientSelected && state.keys.contains(e.toString())? DeselectIngredient(e.toString()) : SelectIngredient(e.toString()));
+//              },),
+//              margin: EdgeInsets.all(25),),
+//            footer: Text(e.toString(), textAlign: TextAlign.center),
+//          );
+//        }
+//    )
 //    ).toList();
 //
   }
@@ -114,78 +117,63 @@ class RecipeDetailScreen extends StatelessWidget {
 
 
   Widget IngredientsGrid(context) {
+
+
+
 //    List<Widget> Ingredients = recipe.ingredients.map((e) =>
 //    BlocBuilder<ShoppingBloc, ShoppingState>(
-//        builder: (context, state) {
+//        builder: (context, state){
+//          state is IngredientSelected? print(state.keys):print('no');
 //          return GridTile(
 //            child: Container(child: InkWell(
-//
-//              child:
-//              state is IngredientSelected && state.keys.contains(e.toString()) ? Image.asset('assets/ing_images/004-fish.png'):Image.asset('assets/ing_images/001-jam.png'),
-//
+//              child:state is IngredientSelected && state.keys.contains(e.toString()) ? Image.asset('assets/ing_images/004-fish.png'):Image.asset('assets/ing_images/001-jam.png'),
 //              onTap: (){
-//                state is IngredientSelected? print(state.keys):print('');
 //                BlocProvider.of<ShoppingBloc>(context).add(state is IngredientSelected && state.keys.contains(e.toString())? DeselectIngredient(e.toString()) : SelectIngredient(e.toString()));
-//                state is IngredientSelected? print(state.keys):print('');
-//
 //              },),
 //              margin: EdgeInsets.all(25),),
 //            footer: Text(e.toString(), textAlign: TextAlign.center),
 //          );
 //        }
 //    )
-//
 //    ).toList();
-
-
-    List<Widget> Ingredients = recipe.ingredients.map((e) =>
-
-              GridTile(
-                child: Container(child: InkWell(
-                  child: Image.asset('assets/ing_images/001-jam.png'),
-                  onTap: (){
-                    SelectIngredient(e.toString());
-                  },),
-                  margin: EdgeInsets.all(25),),
-                footer: Text(e.toString(), textAlign: TextAlign.center),
-              )
-
-
-    ).toList();
 
     return Expanded(
         child:
-              /// create new ingredients list when state changes
-              BlocBuilder<ShoppingBloc, ShoppingState>(
-                  builder: (context, state) {
-                    return GridView.count(
-                      // todo: how to determine corss azid count?
+            BlocBuilder<ShoppingBloc, ShoppingState>(
+                builder: (context, state) {
+                  print('state');
+                  state is IngredientsState? print(state.keys):print('no work');
+//                  state is IngredientSelected? print(state.keys):print('no');
+                  return GridView.count(
+                    // todo: how to determine corss azid count?
                       crossAxisCount: 3,
-                      children: recipe.ingredients.map((e) =>
+                      children: [
+                   GridTile(
+                  child: Container(child: InkWell(
+                  child:state is IngredientsState && state.keys.contains(recipe.ingredients[0]) ? Image.asset('assets/ing_images/004-fish.png'):Image.asset('assets/ing_images/001-jam.png'),
+                  onTap: (){
+//                    state is IngredientSelected? print(state.keys):print('noinner');
 
-                          GridTile(
+                    BlocProvider.of<ShoppingBloc>(context).add(state is IngredientsState && state.keys.contains(recipe.ingredients[0])? DeselectIngredient(recipe.ingredients[0]) : SelectIngredient(recipe.ingredients[0]));
+                  },),
+                  margin: EdgeInsets.all(25),),
+                  footer: Text(recipe.ingredients[0], textAlign: TextAlign.center),
+                  ),
+                        GridTile(
                           child: Container(child: InkWell(
+                            child:state is IngredientsState && state.keys.contains(recipe.ingredients[1]) ? Image.asset('assets/ing_images/004-fish.png'):Image.asset('assets/ing_images/001-jam.png'),
+                            onTap: (){
+//                              state is IngredientSelected? print(state.keys):print('noinner');
 
-                          child:
-                          state is IngredientSelected && state.keys.contains(e.toString()) ? Image.asset('assets/ing_images/004-fish.png'):Image.asset('assets/ing_images/001-jam.png'),
-
-                    onTap: (){
-                    state is IngredientSelected? print(state.keys):print('');
-                    state is IngredientDeselected? print(state.keys):print('');
-                    BlocProvider.of<ShoppingBloc>(context).add(state is IngredientSelected && state.keys.contains(e.toString())? DeselectIngredient(e.toString()) : SelectIngredient(e.toString()));
-
-                    },),
-                    margin: EdgeInsets.all(25),),
-                    footer: Text(e.toString(), textAlign: TextAlign.center),
-                    )
-
-
-                      ).toList(),
-                    );
-                  }
-              )
-
-
+                              BlocProvider.of<ShoppingBloc>(context).add(state is IngredientsState  && state.keys.contains(recipe.ingredients[1])? DeselectIngredient(recipe.ingredients[1]) : SelectIngredient(recipe.ingredients[1]));
+                            },),
+                            margin: EdgeInsets.all(25),),
+                          footer: Text(recipe.ingredients[1], textAlign: TextAlign.center),
+                        )
+                      ]
+                  );
+                }
+            )
     );
 
   }

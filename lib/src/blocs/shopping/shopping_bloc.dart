@@ -15,12 +15,14 @@ class ShoppingBloc extends Bloc<ShoppingEvent, ShoppingState> {
     if (event is SelectIngredient) {
       /// here we must append ingredient to list
       final ingredientList = _repository.addIngredient(event.key);
-      yield IngredientSelected(ingredientList);
+      print(ingredientList);
+      yield IngredientsState(ingredientList);
     }
 
     if (event is DeselectIngredient) {
       final ingredientList = _repository.removeIngredient(event.key);
-      yield IngredientDeselected(ingredientList);
+      print(ingredientList);
+      yield IngredientsState(ingredientList);
     }
 
   }

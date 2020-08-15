@@ -3,54 +3,34 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:recipes/src/models/recipe.dart';
 
-abstract class ShoppingState extends Equatable {
+abstract class ShoppingState {
   const ShoppingState();
 }
 
 class ShoppingInitial extends ShoppingState {
 
-  @override
-  // TODO: implement props
-  List<Object> get props => throw UnimplementedError();
-
 }
 
-class IngredientSelected extends ShoppingState {
-
-//  final key;
+class IngredientsState extends ShoppingState {
   final List<String> keys;
 
-  IngredientSelected(this.keys);
-
-  @override
-  // TODO: implement props
-  List<Object> get props => [this.keys];
+  IngredientsState(this.keys);
 
 }
 
-class IngredientDeselected extends ShoppingState {
-
-//  final key;
-  final List<String> keys;
-
-  IngredientDeselected(this.keys);
-
-  @override
-  // TODO: implement props
-  List<Object> get props => [this.keys];
-
-}
-
-
-//class FavouritesRetrieved extends ShoppingState {
+//class IngredientSelected extends ShoppingState {
 //
-//  final List<Recipe> favList;
+//  final List<String> keys;
 //
-//  FavouritesRetrieved(this.favList);
+//  IngredientSelected(this.keys);
 //
-//  @override
-//  // TODO: implement props
-//  List<Object> get props => throw UnimplementedError();
+//}
+//
+//class IngredientDeselected extends ShoppingState {
+//
+//  final List<String> keys;
+//
+//  IngredientDeselected(this.keys);
 //
 //}
 
