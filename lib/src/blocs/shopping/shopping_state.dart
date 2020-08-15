@@ -7,9 +7,9 @@ abstract class ShoppingState {
   const ShoppingState();
 }
 
-class ShoppingInitial extends ShoppingState {
-
-}
+//class ShoppingInitial extends ShoppingState {
+//
+//}
 
 class IngredientsState extends ShoppingState {
   final List<String> keys;
