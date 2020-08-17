@@ -11,6 +11,10 @@ abstract class ShoppingState {
 //
 //}
 
+//class FabShowMethodState extends ShoppingState {
+//
+//}
+
 class IngredientsState extends ShoppingState {
   final List<String> keys;
 

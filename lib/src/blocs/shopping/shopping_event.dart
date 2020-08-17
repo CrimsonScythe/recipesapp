@@ -6,6 +6,28 @@ abstract class ShoppingEvent extends Equatable {
   const ShoppingEvent();
 }
 
+//class FabShowMethod extends ShoppingEvent {
+//
+//
+//
+//  @override
+//  // TODO: implement props
+//  List<Object> get props => throw UnimplementedError();
+//
+//}
+
+
+class AddIngredientsToList extends ShoppingEvent {
+
+  final List<String> keys;
+
+  AddIngredientsToList(this.keys);
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [keys];
+
+}
 
 class SelectIngredient extends ShoppingEvent {
 

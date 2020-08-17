@@ -17,10 +17,17 @@ class ShoppingBloc extends Bloc<ShoppingEvent, ShoppingState> {
 //      final ingredientList = _repository.addIngredient(event.key);
 //      print(ingredientList);
 //      yield IngredientsState(ingredientList);
-      final lst = (state as IngredientsState).keys;
-      lst.add(event.key);
-      print(lst);
-      yield IngredientsState(lst);
+//      if (state is IngredientsState){
+        final lst = (state as IngredientsState).keys;
+        lst.add(event.key);
+        print(lst);
+        yield IngredientsState(lst);
+//      } else {
+//        var lst=new List<String>();
+//        lst.add(event.key);
+//        yield IngredientsState(lst);
+//      }
+
     }
 
     if (event is DeselectIngredient) {
@@ -33,6 +40,17 @@ class ShoppingBloc extends Bloc<ShoppingEvent, ShoppingState> {
       yield IngredientsState(lst);
     }
 
+    if (event is AddIngredientsToList ){
+      /// add to repo or something
+      // todo add to repo or something
+//      _repository
+      yield IngredientsState(new List<String>());
+    }
+//
+
+//    if (event is FabShowMethod) {
+//      yield FabShowMethodState();
+//    }
   }
 
 }
