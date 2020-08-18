@@ -4,7 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:recipes/resources/data_provider.dart';
 import 'package:recipes/resources/firestore_provider.dart';
 import 'package:recipes/src/models/recipe.dart';
+import 'package:recipes/src/models/rootlist.dart';
 import 'package:recipes/src/models/user.dart';
+import 'package:tuple/tuple.dart';
 
 class Repository {
   static final Repository _repository = Repository._internal();
@@ -47,6 +49,18 @@ class Repository {
 
   Future<void> addUser(user) =>
     _firestoreProvider.addUser(user);
+
+  /// add to existing shopping list
+  Future<void> addtoShoppingList(uID, list, listID, recipeID) =>
+  _firestoreProvider.addtoShoppingList(uID, listID, recipeID, list);
+
+  /// get all master/root lists
+  Future<List<RootList>> getShoppingLists(uID) =>
+  _firestoreProvider.getShoppingLists(uID);
+
+  /// create new root shopping list
+  Future<String> createShoppingList(uID, name) =>
+  _firestoreProvider.createShoppingList(uID, name);
 
   /// to db
   Future<void> addFavourite(uID, recipeID) =>

@@ -16,18 +16,41 @@ abstract class ShoppingEvent extends Equatable {
 //
 //}
 
-
-class AddIngredientsToList extends ShoppingEvent {
+class PopulateDialog extends ShoppingEvent {
 
   final List<String> keys;
+  final String recipeID;
 
-  AddIngredientsToList(this.keys);
+  PopulateDialog(this.keys, this.recipeID);
 
   @override
   // TODO: implement props
-  List<Object> get props => [keys];
+  List<Object> get props => [keys, recipeID];
 
 }
+
+class ClearList extends ShoppingEvent{
+
+
+
+
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+
+}
+//class AddIngredientsToList extends ShoppingEvent {
+//
+//  final List<String> keys;
+//  final String recipeID;
+//
+//  AddIngredientsToList(this.keys, this.recipeID);
+//
+//  @override
+//  // TODO: implement props
+//  List<Object> get props => [keys, recipeID];
+//
+//}
 
 class SelectIngredient extends ShoppingEvent {
 

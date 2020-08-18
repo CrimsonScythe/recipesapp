@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:recipes/src/models/recipe.dart';
+import 'package:recipes/src/models/rootlist.dart';
 
 abstract class ShoppingState {
   const ShoppingState();
@@ -17,8 +18,8 @@ abstract class ShoppingState {
 
 class IngredientsState extends ShoppingState {
   final List<String> keys;
-
-  IngredientsState(this.keys);
+  final List<RootList> rootLists;
+  IngredientsState(this.keys, this.rootLists);
 
 }
 

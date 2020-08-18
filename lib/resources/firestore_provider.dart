@@ -4,7 +4,10 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:recipes/src/models/favourite.dart';
 import 'package:recipes/src/models/recipe.dart';
+import 'package:recipes/src/models/rootlist.dart';
+import 'package:recipes/src/models/shoppinglist.dart';
 import 'package:recipes/src/models/user.dart';
+import 'package:tuple/tuple.dart';
 import '../src/constants.dart' as Constants;
 import 'package:intl/intl.dart';
 
@@ -34,6 +37,63 @@ class FirestoreProvider{
   Future<void> logOut() {
     _firebaseAuth.signOut();
   }
+
+  Future<void> addtoShoppingList(uID, listID, recipeID, list) async {
+
+    return _firestore.collection("users").document(uID).collection("shopping").document(listID).collection("lists").document()
+        .setData(ShoppingList(recipeID, Timestamp.now(), list).toJson(), merge: true);
+
+  }
+
+  Future<String> createShoppingList(uID, name) async {
+
+    final docRef = _firestore.collection("users").document(uID).collection("shopping").document();
+    final id = docRef.documentID;
+    await _firestore.collection("users").document(uID).collection("shopping").document(id).setData({'ctime':Timestamp.now(), 'name':name});
+//    final listRef = _firestore.collection("users").document(uID).collection("shopping").document(id).collection("lists").document();
+    return id;
+//    _firestore.collection("users").document(uID).collection("shopping")
+//    .document().setData(ShoppingList(recipeID, Timestamp.now(), list).toJson());
+
+  }
+
+  Future<List<RootList>> getShoppingLists(uID) async {
+
+    List<RootList> rootLists = new List<RootList>();
+
+    final shoppingLists = await _firestore.collection("users").document(uID).collection("shopping").orderBy('ctime', descending: true)
+        .getDocuments();
+
+
+    for (int i=0; i < shoppingLists.documents.length; i++){
+
+      final docID = shoppingLists.documents[0].documentID;
+      final ctime = shoppingLists.documents[0].data['ctime'];
+      final name = shoppingLists.documents[0].data['name'];
+      final lst = await _firestore.collection("users").document(uID).collection("shopping").document(docID).collection("lists").getDocuments();
+      List<ShoppingList> shplist = lst.documents.map((e) => ShoppingList.fromJson(e.data)).toList();
+      rootLists.add(new RootList(ctime, name, shplist));
+    }
+
+    return rootLists;
+
+//    List<Tuple2<Recipe, List<String>>> shoppingList = List<Tuple2<Recipe, List<String>>>();
+//
+//    final querySnaps = await _firestore.collection("users").document(uID).collection("shopping").orderBy('ctime', descending: true)
+//        .getDocuments();
+//
+//    for (int i=0; i<querySnaps.documents.length; i++){
+//      final path = querySnaps.documents[i].data['reciperef'];
+//      final docSnap = await _firestore.document(path).get();
+//      final inglist = await querySnaps.documents[i].data['inglist'];
+//      shoppingList.add(Tuple2(Recipe.fromJson(docSnap.data), inglist));
+//    }
+//
+//
+//    return shoppingList;
+
+  }
+
 
   /// add recipereference and ctime to db
   Future<void> setFavourite(uID, recipeID) async {

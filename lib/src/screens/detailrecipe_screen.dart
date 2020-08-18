@@ -2,11 +2,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:recipes/src/blocs/detailRecipes/detailrecipe_bloc.dart';
 import 'package:recipes/src/blocs/detailRecipes/detailrecipe_state.dart';
 import 'package:recipes/src/blocs/shopping/shopping_bloc.dart';
 import 'package:recipes/src/blocs/shopping/shopping_event.dart';
 import 'package:recipes/src/blocs/shopping/shopping_state.dart';
+import 'package:recipes/src/cubits/shopping_cubit.dart';
 import 'package:recipes/src/models/recipe.dart';
 import 'package:recipes/src/widgets/minus_widget.dart';
 import 'package:recipes/src/widgets/plus_widget.dart';
@@ -171,7 +173,7 @@ class RecipeDetailScreenState extends State<RecipeDetailScreen> {
           body: localWidget(context)),
       floatingActionButton:
           BlocBuilder<ShoppingBloc, ShoppingState>(
-              builder: (context, state) {
+              builder: (contexts, state) {
 //                return FloatingActionButton.extended(onPressed: (){},icon: Icon(Icons.add), label: Text('Add to shopping cart'));
                 return AnimatedOpacity(
                   opacity: 1.0,
@@ -181,7 +183,12 @@ class RecipeDetailScreenState extends State<RecipeDetailScreen> {
                         (state as IngredientsState).keys.length==0?
                         print('Next')
                         :
-                        BlocProvider.of<ShoppingBloc>(context).add(AddIngredientsToList((state as IngredientsState).keys))
+                        BlocProvider.of<ShoppingBloc>(context).add(PopulateDialog((state as IngredientsState).keys, widget.recipe.id));
+
+                        _showDialog((state as IngredientsState).keys, contexts, state);
+                            /// show dialog box
+                        /// remember to clear list with below to reset state
+//                        BlocProvider.of<ShoppingBloc>(context).add(AddIngredientsToList((state as IngredientsState).keys, widget.recipe.id))
                         ;
                       },
                       icon: Icon((state as IngredientsState).keys.length==0? Icons.navigate_next:Icons.add),
@@ -205,5 +212,102 @@ class RecipeDetailScreenState extends State<RecipeDetailScreen> {
 //              ),
 //          )
     );
+  }
+
+  Future<void>_showDialog(list, rootContext, state) async {
+
+    await showDialog<void>(
+        context: rootContext,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Add to shopping list'),
+            content:
+                  (state as IngredientsState).rootLists.length==0?
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'name',
+                      hintText: 'List created on '+new DateFormat("yyyy-MM-dd").format(DateTime.now()).toString(),
+                    ),
+                  )
+//                       FlatButton.icon(onPressed: (){}, icon: Icon(Icons.add), label: Text('create new list'))
+                      :
+                  Column(
+                    children: (state as IngredientsState).rootLists.map((e) =>
+                        RadioListTile(value: Text(e.name), groupValue: null, onChanged: null)
+//                         FlatButton.icon(onPressed: (){}, icon: Icon(Icons.add), label: Text('add to list'))
+                    ).toList(),
+                  )
+
+            ,
+            actions:
+            <Widget>[
+
+                    (state as IngredientsState).rootLists.length==0?
+                    FlatButton(onPressed: (){
+                      BlocProvider.of<ShoppingBloc>(rootContext).add(ClearList());
+                      Navigator.pop(context);
+                      }, child: Text('CANCEL')):
+                    FlatButton(onPressed: (){
+//                      BlocProvider.of<ShoppingBloc>(rootContext).add(event);
+                    }, child: Text('create shopping list')),
+              FlatButton(onPressed: (){
+
+//                (state as IngredientsState).rootLists.length==0?
+//                create and addd(): ///create list and add
+
+              }, child: Text('OK'))
+            ],
+          );
+        }
+    ).then((value) {
+      BlocProvider.of<ShoppingBloc>(rootContext).add(ClearList());
+      print('ss');
+//      Navigator.pop(context)
+    });
+
+
+//     return showDialog<void>(
+//         context: rootContext,
+//        barrierDismissible: true,
+//       builder: (BuildContext context) {
+//           return AlertDialog(
+//             title: Text('text'),
+//             content:
+////             Text('Hello'),
+//             BlocBuilder<ShoppingBloc, ShoppingState>(
+//                 builder: (context, state) {
+//                   return (state as IngredientsState).rootLists.length==0?
+//                       TextFormField(
+//                         decoration: InputDecoration(
+//                           labelText: 'List created on'+new DateFormat("yyyy-MM-dd").format(DateTime.now()).toString(),
+//                         ),
+//                       )
+////                       FlatButton.icon(onPressed: (){}, icon: Icon(Icons.add), label: Text('create new list'))
+//                       :
+//                       Column(
+//                         children: (state as IngredientsState).rootLists.map((e) =>
+//                             RadioListTile(value: Text(e.name), groupValue: null, onChanged: null)
+////                         FlatButton.icon(onPressed: (){}, icon: Icon(Icons.add), label: Text('add to list'))
+//                         ).toList(),
+//                       );
+//                 }
+//             )
+//             ,
+//             actions:
+//             <Widget>[
+//               BlocBuilder<ShoppingBloc, ShoppingState>(
+//                   builder: (context, state) {
+//                     return (state as IngredientsState).rootLists.length==0?
+//                     FlatButton(onPressed: (){}, child: Text('cancel')):
+//                     FlatButton(onPressed: (){}, child: Text('create shopping list'));
+//                   }
+//               ),
+//               FlatButton(onPressed: (){}, child: Text('ok'))
+//             ],
+//           );
+//       }
+//     );
+
   }
 }

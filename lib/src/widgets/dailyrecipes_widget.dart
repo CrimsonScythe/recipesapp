@@ -46,7 +46,10 @@ class DailyRecipesWidget extends StatelessWidget {
                         ),
                         BlocProvider<ShoppingBloc>(
                           create: (_) => ShoppingBloc(),
-                        )
+                        ),
+//                        BlocProvider<>(
+//
+//                        )
                       ],
                       child: RecipeDetailScreen(recipe: e,),
                     )
