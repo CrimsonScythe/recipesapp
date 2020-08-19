@@ -6,6 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:recipes/src/blocs/detailRecipes/detailrecipe_bloc.dart';
 import 'package:recipes/src/blocs/detailRecipes/detailrecipe_state.dart';
+import 'package:recipes/src/blocs/dialoglists/dialoglists_bloc.dart';
+import 'package:recipes/src/blocs/dialoglists/dialoglists_event.dart';
+import 'package:recipes/src/blocs/dialoglists/dialoglists_state.dart';
 import 'package:recipes/src/blocs/shopping/shopping_bloc.dart';
 import 'package:recipes/src/blocs/shopping/shopping_event.dart';
 import 'package:recipes/src/blocs/shopping/shopping_state.dart';
@@ -188,11 +191,10 @@ class RecipeDetailScreenState extends State<RecipeDetailScreen> {
                     (state as IngredientsState).keys.length == 0 ?
                     print('Next')
                         :
-                    BlocProvider.of<ShoppingBloc>(context).add(PopulateDialog(
-                        (state as IngredientsState).keys, widget.recipe.id));
 
-                    _showDialog(
-                        (state as IngredientsState).keys, contexts, state);
+                        _showDialog((state as IngredientsState).keys, contexts, state);
+//                    _showDialog(
+//                        (state as IngredientsState).keys, contexts, state);
 
                     /// show dialog box
                     /// remember to clear list with below to reset state
@@ -227,74 +229,128 @@ class RecipeDetailScreenState extends State<RecipeDetailScreen> {
     );
   }
 
-  Future<void> _showDialog(list, rootContext, state) async {
+  Future<void> _showDialog(list, rootContext, rootState) async {
+
+
+
     await showDialog<void>(
         context: rootContext,
         barrierDismissible: true,
         builder: (BuildContext context) {
-          return BlocProvider<TextFormBloc>(
-            create: (_) => TextFormBloc(),
-            child: AlertDialog(
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider<TextFormBloc>(
+                  create: (_) => TextFormBloc(),
+                ),
+                BlocProvider<DialogListsBloc>(
+                  create: (_) => DialogListsBloc(),
+                )
+              ],
+              child: AlertDialog(
               title: Text('Add to shopping list'),
               content:
-              (state as IngredientsState).rootLists.length == 0 ||
-                  (state as IngredientsState).create == true ?
-              BlocBuilder<TextFormBloc, TextFormState>(
-                  builder: (context, textstate) {
-                    print((textstate as ListNameState).name);
-                    return TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'name',
-                        errorText: (textstate as ListNameState).name.length == 0
-                            ? 'name empty'
-                            : null,
-                        hintText: 'List created on ' + new DateFormat(
-                            "yyyy-MM-dd").format(DateTime.now()).toString(),
-                      ),
-                      onChanged: (name) =>
-                          BlocProvider.of<TextFormBloc>(context).add(
-                              NameChanged(name)),
-                    );
-                  }
-
-              )
-//                       FlatButton.icon(onPressed: (){}, icon: Icon(Icons.add), label: Text('create new list'))
-                  :
-              Column(
-                children: (state as IngredientsState).rootLists.map((e) =>
-                    RadioListTile(
-                        value: Text(e.name), groupValue: null, onChanged: null)
+                  /// if no lists exists
+              BlocBuilder<DialogListsBloc, DialogListsState>(
+                  builder: (context, dialogstate) {
+                    if (dialogstate is DialogStateInitial){
+                        BlocProvider.of<DialogListsBloc>(context).add(FetchShoppingLists());
+                        return Center(child: CircularProgressIndicator(),);
+                    }
+                    if (dialogstate is ShoppingListNotExists) {
+                      return BlocBuilder<TextFormBloc, TextFormState>(
+                          builder: (context, textstate) {
+                            print((textstate as ListNameState).name);
+                            return TextFormField(
+                              decoration: InputDecoration(
+                                labelText: 'name',
+                                errorText: (textstate as ListNameState).name.length == 0
+                                    ? 'name empty'
+                                    : null,
+                                hintText: 'List created on ' + new DateFormat(
+                                    "yyyy-MM-dd").format(DateTime.now()).toString(),
+                              ),
+                              onChanged: (name) =>
+                                  BlocProvider.of<TextFormBloc>(context).add(
+                                      NameChanged(name)),
+                            );
+                          }
+                      );
+                    }
+                    if (dialogstate is ShoppingListExists) {
+                      return Column(
+                        children: dialogstate.rootLists.map((e) =>
+                            RadioListTile(
+                                value: Text(e.name), groupValue: null, onChanged: null)
 //                         FlatButton.icon(onPressed: (){}, icon: Icon(Icons.add), label: Text('add to list'))
-                ).toList(),
+                        ).toList(),
+                      );
+                    }
+                    return Center(child: CircularProgressIndicator(),);
+                  }
               )
 
-              ,
+                  /// if lists exist
+
+                ,
               actions:
               <Widget>[
 
-                (state as IngredientsState).rootLists.length == 0 ||
-                    (state as IngredientsState).create == true ?
-                FlatButton(onPressed: () {
-                  BlocProvider.of<ShoppingBloc>(rootContext).add(ClearList());
-                  Navigator.pop(context);
-                }, child: Text('CANCEL')) :
-                FlatButton(onPressed: () {
-                  BlocProvider.of<ShoppingBloc>(rootContext).add(
-                      CreateNewList((state as IngredientsState).keys));
-                }, child: Text('create shopping list')),
-                BlocBuilder<TextFormBloc, TextFormState>(
-                    builder: (context, innerstate) {
-                      return FlatButton(
-                          onPressed:
-                          (innerstate as ListNameState).name.length==0?
-                              null :
-                              () {
-                            /// create and post to list
-                      }, child: Text('OK'));
-//                            BlocProvider.of<>(context)
+                BlocBuilder<DialogListsBloc, DialogListsState>(
+                  builder: (context, dialogstate) {
+                    if (dialogstate is DialogStateInitial || dialogstate is LoadingLists) {
+                      return Container();
                     }
-                )
+                    if (dialogstate is ShoppingListExists) {
 
+                      return FlatButton(onPressed: () {
+                        BlocProvider.of<ShoppingBloc>(rootContext).add(
+                            CreateListDialogState(rootState.keys));
+                      }, child: Text('create shopping list'));
+
+                    }
+                    if (dialogstate is ShoppingListNotExists) {
+                      return FlatButton(onPressed: () {
+                        BlocProvider.of<ShoppingBloc>(rootContext).add(ClearList());
+                        Navigator.pop(context);
+                        }, child: Text('CANCEL'));
+                    }
+                    return Container();
+                  },
+                ),
+
+                BlocBuilder<DialogListsBloc, DialogListsState>(
+                  builder: (context, dialogstate) {
+                    if (dialogstate is DialogStateInitial || dialogstate is LoadingLists) {
+                      return Container();
+                    }
+
+                    if (dialogstate is ShoppingListExists) {
+
+                      return FlatButton(onPressed: () {print('yolo');}, child: Text('OK'),);
+
+                    } else if (dialogstate is ShoppingListNotExists) {
+
+                      return BlocBuilder<TextFormBloc, TextFormState>(
+                          builder: (context, innerstate) {
+                            return FlatButton(
+                                onPressed:
+                                (innerstate as ListNameState).name.length==0?
+                                null :
+                                    () {
+                                  BlocProvider.of<DialogListsBloc>(context).add((
+                                      CreateListAndAdd((innerstate as ListNameState).name, rootState.keys, widget.recipe.id)
+                                  ));
+                                  Navigator.pop(context);
+//                            BlocProvider.of<ShoppingBloc>(rootContext).add(AddToList((state as IngredientsState).keys, listid, widget.recipe.id));
+                                  /// create and post to list
+                                }, child: Text('OK')
+                            );
+                          }
+                      );
+                    }
+                    return Container();
+                  },
+                ),
               ],
             ),
           );
@@ -302,59 +358,4 @@ class RecipeDetailScreenState extends State<RecipeDetailScreen> {
     );
   }
 }
-//          return AlertDialog(
-//            title: Text('Add to shopping list'),
-//            content:
-//                  (state as IngredientsState).rootLists.length==0 || (state as IngredientsState).create==true?
-//                  BlocBuilder<TextFormBloc, TextFormState>(
-//                          builder: (context, state) {
-//                            print((state as ListNameState).name);
-//                            return TextFormField(
-//                              decoration: InputDecoration(
-//                                labelText: 'name',
-//                                errorText: (state as ListNameState).name.length==0? 'name empty' : null,
-//                                hintText: 'List created on '+new DateFormat("yyyy-MM-dd").format(DateTime.now()).toString(),
-//                              ),
-//                              onChanged: (name) => BlocProvider.of<TextFormBloc>(context).add(NameChanged(name)),
-//                            );
-//                          }
-//
-//                      )
-////                       FlatButton.icon(onPressed: (){}, icon: Icon(Icons.add), label: Text('create new list'))
-//                      :
-//                  Column(
-//                    children: (state as IngredientsState).rootLists.map((e) =>
-//                        RadioListTile(value: Text(e.name), groupValue: null, onChanged: null)
-////                         FlatButton.icon(onPressed: (){}, icon: Icon(Icons.add), label: Text('add to list'))
-//                    ).toList(),
-//                  )
-//
-//            ,
-//            actions:
-//            <Widget>[
-//
-//                    (state as IngredientsState).rootLists.length==0 || (state as IngredientsState).create==true?
-//                    FlatButton(onPressed: (){
-//                      BlocProvider.of<ShoppingBloc>(rootContext).add(ClearList());
-//                      Navigator.pop(context);
-//                      }, child: Text('CANCEL')):
-//                    FlatButton(onPressed: (){
-//                      BlocProvider.of<ShoppingBloc>(rootContext).add(CreateNewList((state as IngredientsState).keys));
-//                    }, child: Text('create shopping list')),
-//              FlatButton(onPressed: (){
-//
-////                (state as IngredientsState).rootLists.length==0?
-////                create and addd(): ///create list and add
-//
-//              }, child: Text('OK'))
-//            ],
-//          );
-//        }
-//    ).then((value) {
-//      BlocProvider.of<ShoppingBloc>(rootContext).add(ClearList());
-//      print('ss');
-////      Navigator.pop(context)
-//    });
-
-
 

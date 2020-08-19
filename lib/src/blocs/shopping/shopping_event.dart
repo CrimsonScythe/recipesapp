@@ -6,34 +6,26 @@ abstract class ShoppingEvent extends Equatable {
   const ShoppingEvent();
 }
 
-//class FabShowMethod extends ShoppingEvent {
+
+
+//class PopulateDialog extends ShoppingEvent {
 //
+//  final List<String> keys;
+//  final String recipeID;
 //
+//  PopulateDialog(this.keys, this.recipeID);
 //
 //  @override
 //  // TODO: implement props
-//  List<Object> get props => throw UnimplementedError();
+//  List<Object> get props => [keys, recipeID];
 //
 //}
 
-class PopulateDialog extends ShoppingEvent {
-
-  final List<String> keys;
-  final String recipeID;
-
-  PopulateDialog(this.keys, this.recipeID);
-
-  @override
-  // TODO: implement props
-  List<Object> get props => [keys, recipeID];
-
-}
-
-class CreateNewList extends ShoppingEvent{
+class CreateListDialogState extends ShoppingEvent{
 
   final List<String> keys;
 
-  CreateNewList(this.keys);
+  CreateListDialogState(this.keys);
 
 
   @override
@@ -92,3 +84,32 @@ class DeselectIngredient extends ShoppingEvent {
 
 }
 
+//class AddToList extends ShoppingEvent {
+//
+//  final keys;
+//  final String listID;
+//  final String recipeID;
+//
+//  AddToList(this.keys, this.listID, this.recipeID);
+//
+//  @override
+//  // TODO: implement props
+//  List<Object> get props => throw UnimplementedError();
+//
+//}
+
+//class CreateListAndAdd extends ShoppingEvent {
+//
+//  final String name;
+//  final List<String> keys;
+////  final String listID;
+//  final String recipeID;
+//
+//  CreateListAndAdd(this.name, this.keys, this.recipeID);
+//
+//
+//  @override
+//  // TODO: implement props
+//  List<Object> get props => [name, keys];
+//
+//}

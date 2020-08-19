@@ -7,7 +7,7 @@ class ShoppingList extends Equatable{
 
   final String _recipeID;
   final Timestamp _ctime;
-  final List<String> _ingList;
+  final List<dynamic> _ingList;
 
   const ShoppingList(this._recipeID, this._ctime,this._ingList ) : assert (_recipeID != null);
 

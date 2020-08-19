@@ -18,10 +18,9 @@ abstract class ShoppingState {
 
 class IngredientsState extends ShoppingState {
   final List<String> keys;
-  final List<RootList> rootLists;
-  final bool create;
 
-  IngredientsState(this.keys, this.rootLists, this.create);
+
+  IngredientsState(this.keys);
 
 }
 

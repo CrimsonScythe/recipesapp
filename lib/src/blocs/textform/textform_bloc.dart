@@ -13,9 +13,12 @@ class TextFormBloc extends Bloc<TextFormEvent, TextFormState> {
     if (event is NameChanged) {
       yield ListNameState(event.name);
     }
+
+
   }
 
 
 
 
 }
+
