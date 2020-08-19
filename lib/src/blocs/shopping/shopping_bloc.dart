@@ -6,7 +6,7 @@ import 'package:recipes/src/models/rootlist.dart';
 
 class ShoppingBloc extends Bloc<ShoppingEvent, ShoppingState> {
   // todo check initial state
-  ShoppingBloc() : super(IngredientsState(new List<String>(), new List<RootList>()));
+  ShoppingBloc() : super(IngredientsState(new List<String>(), new List<RootList>(), false));
 
   Repository _repository = Repository();
 
@@ -22,7 +22,7 @@ class ShoppingBloc extends Bloc<ShoppingEvent, ShoppingState> {
         final lst = (state as IngredientsState).keys;
         lst.add(event.key);
         print(lst);
-        yield IngredientsState(lst, new List<RootList>());
+        yield IngredientsState(lst, new List<RootList>(), false);
 //      } else {
 //        var lst=new List<String>();
 //        lst.add(event.key);
@@ -38,7 +38,7 @@ class ShoppingBloc extends Bloc<ShoppingEvent, ShoppingState> {
       final lst = (state as IngredientsState).keys;
       lst.remove(event.key);
       print(lst);
-      yield IngredientsState(lst, new List<RootList>());
+      yield IngredientsState(lst, new List<RootList>(), false);
     }
 
     if (event is PopulateDialog){
@@ -57,16 +57,16 @@ class ShoppingBloc extends Bloc<ShoppingEvent, ShoppingState> {
 
 
     if (lists != null) {
-      yield IngredientsState(event.keys, new List<RootList>());
+      yield IngredientsState(event.keys, new List<RootList>(), true);
 
       if (lists.length!=0){
 
       } else {
-        yield IngredientsState(event.keys, lists);
+        yield IngredientsState(event.keys, lists, false);
       }
 
     } else {
-      yield IngredientsState(event.keys, new List<RootList>());
+      yield IngredientsState(event.keys, new List<RootList>(), true);
 //      final listID = await _repository.createShoppingList(_repository.user.uID, 'list1');
 //      await _repository.addtoShoppingList(_repository.user.uID, event.keys, listID, event.recipeID);
 //      yield IngredientsState(new List<String>());
@@ -78,9 +78,15 @@ class ShoppingBloc extends Bloc<ShoppingEvent, ShoppingState> {
 
     }
 
-    if (event is ClearList) {
-      yield IngredientsState(new List<String>(), new List<RootList>());
+    if (event is CreateNewList) {
+      yield IngredientsState(event.keys, new List<RootList>(), true);
     }
+
+    if (event is ClearList) {
+      yield IngredientsState(new List<String>(), new List<RootList>(), false);
+    }
+
+
 
   }
 

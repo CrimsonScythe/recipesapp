@@ -29,6 +29,19 @@ class PopulateDialog extends ShoppingEvent {
 
 }
 
+class CreateNewList extends ShoppingEvent{
+
+  final List<String> keys;
+
+  CreateNewList(this.keys);
+
+
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+
+}
+
 class ClearList extends ShoppingEvent{
 
 

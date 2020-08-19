@@ -10,6 +10,7 @@ import 'package:recipes/src/blocs/detailRecipes/detailrecipe_state.dart';
 import 'package:recipes/src/blocs/favourites/favourites_bloc.dart';
 import 'package:recipes/src/blocs/favourites/favourites_state.dart';
 import 'package:recipes/src/blocs/shopping/shopping_bloc.dart';
+import 'package:recipes/src/blocs/textform/textform_bloc.dart';
 import 'package:recipes/src/models/recipe.dart';
 import 'package:recipes/src/screens/dailyrecipe_screen.dart';
 import 'package:recipes/src/screens/detailrecipe_screen.dart';
@@ -47,8 +48,8 @@ class DailyRecipesWidget extends StatelessWidget {
                         BlocProvider<ShoppingBloc>(
                           create: (_) => ShoppingBloc(),
                         ),
-//                        BlocProvider<>(
-//
+//                        BlocProvider<TextFormBloc>(
+//                          create: (_) => TextFormBloc(),
 //                        )
                       ],
                       child: RecipeDetailScreen(recipe: e,),
