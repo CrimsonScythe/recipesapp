@@ -9,8 +9,9 @@ abstract class DialogListsState {
 class ShoppingListExists extends DialogListsState {
 
   final List<RootList> rootLists;
+  final String docID;
 
-  ShoppingListExists(this.rootLists);
+  ShoppingListExists(this.rootLists, this.docID);
 
 }
 

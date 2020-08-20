@@ -7,12 +7,14 @@ import 'package:recipes/src/models/shoppinglist.dart';
 class RootList extends Equatable{
 
 //  final String _recipeID;
+  final String _docID;
   final Timestamp _ctime;
   final String _name;
   final List<ShoppingList> _shplist;
 
-  const RootList(this._ctime, this._name, this._shplist );
+  const RootList(this._docID, this._ctime, this._name, this._shplist );
 
+  String get docID => _docID;
 
   Timestamp get ctime => _ctime; //  String get uID => _uID;
 //  String get _profilePic => _profilePicUrl;

@@ -19,7 +19,7 @@ class DialogListsBloc extends Bloc<DialogListsEvent, DialogListsState> {
 
       if (lists != null && lists.length!=0) {
 
-        yield ShoppingListExists(lists);
+        yield ShoppingListExists(lists, lists[0].docID);
 
       } else {
         yield ShoppingListNotExists();
@@ -35,6 +35,20 @@ class DialogListsBloc extends Bloc<DialogListsEvent, DialogListsState> {
 
       yield AddedToList();
 
+    }
+
+
+    if (event is AddToList) {
+      await _repository.addtoShoppingList(_repository.user.uID, event.keys, event.listID, event.recipeID);
+      yield AddedToList();
+    }
+
+    if (event is onChanged) {
+      yield ShoppingListExists(event.rootLists, event.value);
+    }
+
+    if (event is CreateListDialogEvent) {
+      yield ShoppingListNotExists();
     }
 
   }

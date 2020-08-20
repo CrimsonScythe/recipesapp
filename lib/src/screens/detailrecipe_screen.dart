@@ -15,6 +15,7 @@ import 'package:recipes/src/blocs/shopping/shopping_state.dart';
 import 'package:recipes/src/blocs/textform/textform_bloc.dart';
 import 'package:recipes/src/blocs/textform/textform_event.dart';
 import 'package:recipes/src/blocs/textform/textform_state.dart';
+import 'package:recipes/src/cubits/dialog_cubit.dart';
 import 'package:recipes/src/cubits/shopping_cubit.dart';
 import 'package:recipes/src/models/recipe.dart';
 import 'package:recipes/src/widgets/minus_widget.dart';
@@ -277,10 +278,15 @@ class RecipeDetailScreenState extends State<RecipeDetailScreen> {
                       );
                     }
                     if (dialogstate is ShoppingListExists) {
+//                      print('name');
+//                      print(dialogstate.rootLists[0].name);
+
                       return Column(
                         children: dialogstate.rootLists.map((e) =>
                             RadioListTile(
-                                value: Text(e.name), groupValue: null, onChanged: null)
+                              title: Text(e.name),
+                                value: e.docID, groupValue: dialogstate.docID, onChanged: (value){ BlocProvider.of<DialogListsBloc>(context).add(onChanged(dialogstate.rootLists, value)); }
+                                )
 //                         FlatButton.icon(onPressed: (){}, icon: Icon(Icons.add), label: Text('add to list'))
                         ).toList(),
                       );
@@ -303,8 +309,10 @@ class RecipeDetailScreenState extends State<RecipeDetailScreen> {
                     if (dialogstate is ShoppingListExists) {
 
                       return FlatButton(onPressed: () {
-                        BlocProvider.of<ShoppingBloc>(rootContext).add(
-                            CreateListDialogState(rootState.keys));
+
+                        BlocProvider.of<DialogListsBloc>(context).add(
+                            CreateListDialogEvent());
+
                       }, child: Text('create shopping list'));
 
                     }
@@ -326,7 +334,11 @@ class RecipeDetailScreenState extends State<RecipeDetailScreen> {
 
                     if (dialogstate is ShoppingListExists) {
 
-                      return FlatButton(onPressed: () {print('yolo');}, child: Text('OK'),);
+                      return FlatButton(onPressed: () {
+                        /// add item to selected list
+                        BlocProvider.of<DialogListsBloc>(context).add(AddToList(rootState.keys, dialogstate.docID ,widget.recipe.id));
+                        Navigator.pop(context);
+                        }, child: Text('OK'),);
 
                     } else if (dialogstate is ShoppingListNotExists) {
 
@@ -355,7 +367,7 @@ class RecipeDetailScreenState extends State<RecipeDetailScreen> {
             ),
           );
         }
-    );
+    ).then((value) => BlocProvider.of<ShoppingBloc>(rootContext).add(ClearList()));
   }
 }
 

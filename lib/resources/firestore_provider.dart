@@ -67,12 +67,12 @@ class FirestoreProvider{
 
     for (int i=0; i < shoppingLists.documents.length; i++){
 
-      final docID = shoppingLists.documents[0].documentID;
-      final ctime = shoppingLists.documents[0].data['ctime'];
-      final name = shoppingLists.documents[0].data['name'];
+      final docID = shoppingLists.documents[i].documentID;
+      final ctime = shoppingLists.documents[i].data['ctime'];
+      final name = shoppingLists.documents[i].data['name'];
       final lst = await _firestore.collection("users").document(uID).collection("shopping").document(docID).collection("lists").getDocuments();
       List<ShoppingList> shplist = lst.documents.map((e) => ShoppingList.fromJson(e.data)).toList();
-      rootLists.add(new RootList(ctime, name, shplist));
+      rootLists.add(new RootList(docID, ctime, name, shplist));
     }
 
     return rootLists;
