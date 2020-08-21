@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:recipes/src/models/favourite.dart';
@@ -24,6 +25,25 @@ class FirestoreProvider{
     return _firestore.collection('recipes').document(Constants.MEAT_DOC).collection(today).getDocuments();
   }
 
+  Future<List<Recipe>> getRecipesList(List<ShoppingList> shplists) async {
+
+    List<Recipe> recipesList = new List(shplists.length);
+    for (int i =0; i<shplists.length; i++) {
+      DocumentSnapshot docSnap = await _firestore.document(shplists[i].recipeID).get();
+      var imgUrl = docSnap.data['img'];
+      if (!imgUrl.contains(new RegExp(r'(http)|(https)', caseSensitive: false))){
+        imgUrl='http://'+imgUrl;
+      }
+
+      recipesList[i]=(Recipe.fromJson(docSnap.data));
+      /// solve cdn issue
+      recipesList[i].img=imgUrl;
+    }
+
+    return recipesList;
+
+
+  }
 
   Future<FirebaseUser> getUser() =>
       _firebaseAuth.currentUser();
@@ -39,9 +59,31 @@ class FirestoreProvider{
   }
 
   Future<void> addtoShoppingList(uID, listID, recipeID, list) async {
+/// each document in list corresponds to a unique recipe
 
-    return _firestore.collection("users").document(uID).collection("shopping").document(listID).collection("lists").document()
-        .setData(ShoppingList(recipeID, Timestamp.now(), list).toJson(), merge: true);
+    final docSnap = await _firestore.collection("users").document(uID).collection("shopping").document(listID).collection("lists")
+    .document(recipeID.toString().split('/').last).get();
+
+    List<dynamic> inglst;
+
+    if (docSnap.data != null){
+      inglst = docSnap.data['inglist'];
+
+
+
+
+    list.forEach((element) {
+      if (!inglst.contains(element)){
+        inglst.add(element);
+      }
+    });
+
+    } else {
+      inglst = list;
+    }
+
+    return _firestore.collection("users").document(uID).collection("shopping").document(listID).collection("lists").document(recipeID.toString().split('/').last)
+        .setData(ShoppingList(recipeID, Timestamp.now(), inglst).toJson(), merge: true);
 
   }
 
@@ -139,6 +181,7 @@ class FirestoreProvider{
 
 
   }
+
 
   Future<User> logInAnon() async {
 

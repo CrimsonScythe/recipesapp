@@ -31,7 +31,7 @@ class DialogListsBloc extends Bloc<DialogListsEvent, DialogListsState> {
     if (event is CreateListAndAdd) {
 
       final listid = await _repository.createShoppingList(_repository.user.uID, event.name);
-      _repository.addtoShoppingList(_repository.user.uID, event.keys, listid, event.recipeID);
+      await _repository.addtoShoppingList(_repository.user.uID, event.keys, listid, event.recipeID);
 
       yield AddedToList();
 

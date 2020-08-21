@@ -6,6 +6,7 @@ import 'package:recipes/src/blocs/bottomnav/bottomnav_state.dart';
 import 'package:recipes/src/blocs/dailyRecipes/dailyRecipes_state.dart';
 import 'package:recipes/src/blocs/dailyRecipes/dailyrecipes_bloc.dart';
 import 'package:recipes/src/blocs/favourites/favourites_bloc.dart';
+import 'package:recipes/src/blocs/shoppingscreen/shoppingscreen_bloc.dart';
 import 'package:recipes/src/screens/favourites_screen.dart';
 import 'package:recipes/src/screens/home_screen.dart';
 import 'package:recipes/src/screens/profile_screen.dart';
@@ -41,6 +42,10 @@ class AppScreen extends StatelessWidget {
 //              return FavouritesScreen();
             }
             if (state is ShoppingPageLoaded){
+              return BlocProvider(
+                  create: (_) => ShoppingScreenBloc(),
+                  child: ShoppingScreen(),
+              );
               return ShoppingScreen();
             }
             if (state is ProfilePageLoaded) {

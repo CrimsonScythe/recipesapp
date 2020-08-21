@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recipes/resources/repository.dart';
 import 'package:recipes/src/blocs/dailyRecipes/dailyRecipes_state.dart';
 import 'package:recipes/src/blocs/dailyRecipes/dailyrecipes_bloc.dart';
-import 'package:recipes/src/blocs/favourites/favourites_bloc.dart';
-import 'package:recipes/src/blocs/favourites/favourites_state.dart';
 import 'package:recipes/src/widgets/dailyrecipes_widget.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -44,7 +41,7 @@ class HomeScreen extends StatelessWidget {
           if (state is RecipesLoadFailure) {
             return Center(child: Text('Error'),);
           }
-          return Container();
+          return Center(child: CircularProgressIndicator(),);
         },
       ),
 

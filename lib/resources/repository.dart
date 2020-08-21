@@ -5,6 +5,7 @@ import 'package:recipes/resources/data_provider.dart';
 import 'package:recipes/resources/firestore_provider.dart';
 import 'package:recipes/src/models/recipe.dart';
 import 'package:recipes/src/models/rootlist.dart';
+import 'package:recipes/src/models/shoppinglist.dart';
 import 'package:recipes/src/models/user.dart';
 import 'package:tuple/tuple.dart';
 
@@ -33,6 +34,9 @@ class Repository {
     ingredients.remove(ingredient);
     return ingredients;
   }
+
+  Future<List<Recipe>> getRecipesList(List<ShoppingList> shplists) =>
+    _firestoreProvider.getRecipesList(shplists);
 
 
   Future<QuerySnapshot> getDailyRecipes() =>

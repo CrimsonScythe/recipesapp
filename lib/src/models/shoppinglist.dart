@@ -11,7 +11,7 @@ class ShoppingList extends Equatable{
 
   const ShoppingList(this._recipeID, this._ctime,this._ingList ) : assert (_recipeID != null);
 
-//  String get uID => _uID;
+  String get recipeID => _recipeID; //  String get uID => _uID;
 //  String get _profilePic => _profilePicUrl;
 
 
@@ -33,6 +33,10 @@ class ShoppingList extends Equatable{
   @override
   // TODO: implement props
   List<Object> get props => [_recipeID, _ctime, _ingList];
+
+  Timestamp get ctime => _ctime;
+
+  List<dynamic> get ingList => _ingList;
 
 
 }
