@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/rendering.dart';
 import 'package:path/path.dart';
 import 'package:http/http.dart' show get;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,10 +8,13 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:image_downloader/image_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:recipes/src/models/recipe.dart';
+import 'package:recipes/src/models/rootlist.dart';
+import 'package:recipes/src/models/shoppinglist.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../src/constants.dart' as Constants;
 import 'package:intl/intl.dart';
-
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class DataProvider {
 
@@ -23,6 +27,48 @@ class DataProvider {
   Future<File> get _localFile async {
     final path = await _localPath;
     return File('$path/counter.json');
+  }
+
+  Future<void> addToShoppingListLocal(recipeID, key, list) async {
+
+    var box = await Hive.openBox<RootList>('shopping');
+
+    final root = await box.get(key);
+
+    root.shplist.add(ShoppingList(recipeID, DateTime.now().toString(), list));
+    final newRoot = root;
+    box.put(key , newRoot);
+  }
+
+  Future<List<RootList>> getShoppingListsLocal() async {
+
+    var box = await Hive.openBox<RootList>('shopping');
+    List<RootList> rootLists = new List<RootList>();
+
+    print('keys');
+    box.keys.forEach((element) {
+      print(element);
+      rootLists.add(box.get(element));
+    });
+
+    return rootLists;
+
+  }
+
+  Future<int> createShoppingListLocal(name) async {
+    /// create a box so open a box
+
+    var box = await Hive.openBox<RootList>('shopping');
+    final key = await box.add(RootList(0, DateTime.now().toString(), name, List<ShoppingList>()));
+    final stored = await box.get(key);
+    stored.docID=key;
+    await box.put(key, stored);
+    print('list created');
+    print('key');
+    print(key);
+    return key;
+    /// return unique id for shopping list
+
   }
 
   Future<void> writeRecipe(String jsonString, i) async {
@@ -152,6 +198,7 @@ class DataProvider {
       /// create Recipe object from firebase data
       final recipetoJ = Recipe.fromJson(recipe.data);
       /// change image path to reflect local path storage
+      // todo ALSO DANGEOROUS
       recipetoJ.img=filesaved.path;
 
 //      print('id');
@@ -160,6 +207,7 @@ class DataProvider {
       print(recipe.reference.path);
 //      print(recipe.reference.path.split('/')[1]);
       /// add id from docID because didnt do it in python
+      // todo DANGEROUS DO IN PYTHON
       recipetoJ.id=recipe.reference.path;
       print(recipetoJ.id);
       print('printed');

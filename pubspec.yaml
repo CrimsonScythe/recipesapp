@@ -14,11 +14,15 @@ description: recipes app
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.6.0 <3.0.0"
+
+dependency_overrides:
+  analyzer: 0.39.14
 
 dependencies:
   flutter:
     sdk: flutter
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -39,12 +43,14 @@ dependencies:
   shared_preferences: ^0.5.8
   carousel_slider: ^2.2.1
   tuple: ^1.0.3
-
+  hive: ^1.4.4
+  hive_flutter: ^0.3.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  hive_generator: ^0.7.1
+  build_runner: ^1.10.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -1,8 +1,14 @@
+import 'dart:io';
+import 'package:http/http.dart' show get;
+import 'dart:convert';
+import 'package:path/path.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:recipes/src/models/favourite.dart';
 import 'package:recipes/src/models/recipe.dart';
 import 'package:recipes/src/models/rootlist.dart';
@@ -34,10 +40,20 @@ class FirestoreProvider{
       if (!imgUrl.contains(new RegExp(r'(http)|(https)', caseSensitive: false))){
         imgUrl='http://'+imgUrl;
       }
-
+      print(docSnap.data['id']);
       recipesList[i]=(Recipe.fromJson(docSnap.data));
+
+
+//      var response = await get(imgUrl);
+//
+//      final docDirect = await getApplicationDocumentsDirectory();
+//      File file = new File(join(docDirect.path, '$i.jpg'));
+//      final filesaved = await file.writeAsBytes(response.bodyBytes);
+//
       /// solve cdn issue
       recipesList[i].img=imgUrl;
+
+      recipesList[i].id = shplists[i].recipeID;
     }
 
     return recipesList;
@@ -61,7 +77,8 @@ class FirestoreProvider{
   Future<void> addtoShoppingList(uID, listID, recipeID, list) async {
 /// each document in list corresponds to a unique recipe
 
-    final docSnap = await _firestore.collection("users").document(uID).collection("shopping").document(listID).collection("lists")
+    final docSnap = await _firestore.collection("users").document(uID).collection("shopping")
+        .document(listID).collection("lists")
     .document(recipeID.toString().split('/').last).get();
 
     List<dynamic> inglst;
@@ -83,15 +100,19 @@ class FirestoreProvider{
     }
 
     return _firestore.collection("users").document(uID).collection("shopping").document(listID).collection("lists").document(recipeID.toString().split('/').last)
-        .setData(ShoppingList(recipeID, Timestamp.now(), inglst).toJson(), merge: true);
+        .setData(ShoppingList(recipeID, DateTime.now().toString(), inglst).toJson(), merge: true);
 
   }
 
   Future<String> createShoppingList(uID, name) async {
 
-    final docRef = _firestore.collection("users").document(uID).collection("shopping").document();
+    final docRef = _firestore.collection("users").document(uID)
+        .collection("shopping").document();
     final id = docRef.documentID;
-    await _firestore.collection("users").document(uID).collection("shopping").document(id).setData({'ctime':Timestamp.now(), 'name':name});
+    await _firestore.collection("users").document(uID)
+        .collection("shopping")
+        .document(id)
+        .setData({'ctime':Timestamp.now(), 'name':name});
 //    final listRef = _firestore.collection("users").document(uID).collection("shopping").document(id).collection("lists").document();
     return id;
 //    _firestore.collection("users").document(uID).collection("shopping")
@@ -99,42 +120,27 @@ class FirestoreProvider{
 
   }
 
-  Future<List<RootList>> getShoppingLists(uID) async {
-
-    List<RootList> rootLists = new List<RootList>();
-
-    final shoppingLists = await _firestore.collection("users").document(uID).collection("shopping").orderBy('ctime', descending: true)
-        .getDocuments();
-
-
-    for (int i=0; i < shoppingLists.documents.length; i++){
-
-      final docID = shoppingLists.documents[i].documentID;
-      final ctime = shoppingLists.documents[i].data['ctime'];
-      final name = shoppingLists.documents[i].data['name'];
-      final lst = await _firestore.collection("users").document(uID).collection("shopping").document(docID).collection("lists").getDocuments();
-      List<ShoppingList> shplist = lst.documents.map((e) => ShoppingList.fromJson(e.data)).toList();
-      rootLists.add(new RootList(docID, ctime, name, shplist));
-    }
-
-    return rootLists;
-
-//    List<Tuple2<Recipe, List<String>>> shoppingList = List<Tuple2<Recipe, List<String>>>();
+//  Future<List<RootList>> getShoppingLists(uID) async {
 //
-//    final querySnaps = await _firestore.collection("users").document(uID).collection("shopping").orderBy('ctime', descending: true)
+//    List<RootList> rootLists = new List<RootList>();
+//
+//    final shoppingLists = await _firestore.collection("users").document(uID).collection("shopping").orderBy('ctime', descending: true)
 //        .getDocuments();
 //
-//    for (int i=0; i<querySnaps.documents.length; i++){
-//      final path = querySnaps.documents[i].data['reciperef'];
-//      final docSnap = await _firestore.document(path).get();
-//      final inglist = await querySnaps.documents[i].data['inglist'];
-//      shoppingList.add(Tuple2(Recipe.fromJson(docSnap.data), inglist));
+//
+//    for (int i=0; i < shoppingLists.documents.length; i++){
+//
+//      final docID = shoppingLists.documents[i].documentID;
+//      final ctime = shoppingLists.documents[i].data['ctime'];
+//      final name = shoppingLists.documents[i].data['name'];
+//      final lst = await _firestore.collection("users").document(uID).collection("shopping").document(docID).collection("lists").getDocuments();
+//      List<ShoppingList> shplist = lst.documents.map((e) => ShoppingList.fromJson(e.data)).toList();
+//      rootLists.add(new RootList(docID, ctime, name, shplist));
 //    }
 //
+//    return rootLists;
 //
-//    return shoppingList;
-
-  }
+//  }
 
 
   /// add recipereference and ctime to db
@@ -145,6 +151,14 @@ class FirestoreProvider{
         .document().setData(Favourite(recipeID, Timestamp.now()).toJson());
 
   }
+
+//  void deleteIngredient() async {
+//
+//    _firestore.collection("users").document(uID).collection("shopping").document(listID)
+//        .collection("lists").document().delete();
+//
+//
+//  }
 
   Future<void> deleteFavourite(uID, recipeID) async {
     /// query document using the recipeid.

@@ -9,7 +9,7 @@ abstract class DialogListsState {
 class ShoppingListExists extends DialogListsState {
 
   final List<RootList> rootLists;
-  final String docID;
+  final int docID;
 
   ShoppingListExists(this.rootLists, this.docID);
 

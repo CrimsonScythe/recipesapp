@@ -27,3 +27,15 @@ class ParseShoppingLists extends ShoppingListEvent {
   List<Object> get props => throw UnimplementedError();
 
 }
+
+class RemoveIngredient extends ShoppingListEvent {
+
+  final String ingredient;
+
+  RemoveIngredient(this.ingredient);
+
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+
+}

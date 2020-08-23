@@ -15,7 +15,10 @@ class DialogListsBloc extends Bloc<DialogListsEvent, DialogListsState> {
 
       yield LoadingLists();
 
-      final lists = await _repository.getShoppingLists(_repository.user.uID);
+      // todo changing from firestore to local db
+//      final lists = await _repository.getShoppingLists(_repository.user.uID);
+      final lists = await _repository.getShoppingListsLocal();
+
 
       if (lists != null && lists.length!=0) {
 
@@ -28,18 +31,33 @@ class DialogListsBloc extends Bloc<DialogListsEvent, DialogListsState> {
 
     }
 
-    if (event is CreateListAndAdd) {
+    if (event is CreateListAndAddLocal) {
 
-      final listid = await _repository.createShoppingList(_repository.user.uID, event.name);
-      await _repository.addtoShoppingList(_repository.user.uID, event.keys, listid, event.recipeID);
+      final key = await _repository.createShoppingListLocal(event.name);
+      await _repository.addToShoppingListLocal(event.recipeID, key, event.keys);
 
       yield AddedToList();
 
     }
 
+//    if (event is CreateListAndAdd) {
+//
+//      final listid = await _repository.createShoppingList(_repository.user.uID, event.name);
+//      await _repository.addtoShoppingList(_repository.user.uID, event.keys, listid, event.recipeID);
+//
+//      yield AddedToList();
+//
+//    }
 
-    if (event is AddToList) {
-      await _repository.addtoShoppingList(_repository.user.uID, event.keys, event.listID, event.recipeID);
+
+//    if (event is AddToList) {
+//      await _repository.addtoShoppingList(_repository.user.uID, event.keys, event.listID, event.recipeID);
+//      yield AddedToList();
+//    }
+
+    if (event is AddToListLocal) {
+//      await _repository.addtoShoppingList(_repository.user.uID, event.keys, event.listID, event.recipeID);
+      await _repository.addToShoppingListLocal(event.recipeID, event.key, event.keys);
       yield AddedToList();
     }
 

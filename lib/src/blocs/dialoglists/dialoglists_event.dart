@@ -33,6 +33,21 @@ class CreateListAndAdd extends DialogListsEvent {
 
 }
 
+class CreateListAndAddLocal extends DialogListsEvent {
+
+
+  final List<String> keys;
+  final String recipeID;
+  final String name;
+
+  CreateListAndAddLocal(this.name, this.keys, this.recipeID);
+
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+
+}
+
 class CreateListDialogEvent extends DialogListsEvent {
 
   @override
@@ -44,9 +59,24 @@ class CreateListDialogEvent extends DialogListsEvent {
 class onChanged extends DialogListsEvent {
 
   final List<RootList> rootLists;
-  final String value;
+  final int value;
 
   onChanged( this.rootLists, this.value,);
+
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+
+}
+
+class AddToListLocal extends DialogListsEvent {
+
+
+  final List<String> keys;
+  final String recipeID;
+  final int key;
+
+  AddToListLocal(this.keys, this.key, this.recipeID);
 
   @override
   // TODO: implement props

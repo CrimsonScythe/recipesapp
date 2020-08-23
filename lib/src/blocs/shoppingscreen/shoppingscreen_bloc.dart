@@ -13,7 +13,9 @@ class ShoppingScreenBloc extends Bloc<ShoppingScreenEvent, ShoppingScreenState> 
   Stream<ShoppingScreenState> mapEventToState(ShoppingScreenEvent event) async* {
     if (event is GetRootLists) {
 
-      List<RootList> rootLists = await _repository.getShoppingLists(_repository.user.uID);
+//      List<RootList> rootLists = await _repository.getShoppingLists(_repository.user.uID);
+
+    List<RootList> rootLists = await _repository.getShoppingListsLocal();
 
       if (rootLists==null || rootLists.length==0) {
         yield RootListsNotExist();

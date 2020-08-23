@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:recipes/resources/repository.dart';
+import 'package:recipes/src/blocs/dailyRecipes/dailyRecipes_state.dart';
 import 'package:recipes/src/models/recipe.dart';
-import 'dailyRecipes_state.dart';
 
 enum dRecipesEvent {  dRecipesRequested }
 
@@ -43,6 +43,8 @@ class DailyRecipesBloc extends Bloc<dRecipesEvent, DailyRecipesState> {
     print(path);
     /// list<recipe>
     final recipesList = await _repository.readDailyRecipes(path);
+    print('fromperv');
+    print(recipesList[0].id);
     print(recipesList);
     return recipesList;
   }

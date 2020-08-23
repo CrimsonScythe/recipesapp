@@ -1,22 +1,34 @@
 import 'dart:convert';
-
+import 'package:hive/hive.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:recipes/src/models/shoppinglist.dart';
 
+part 'rootlist.g.dart';
+
+@HiveType(typeId : 0)
 class RootList extends Equatable{
 
 //  final String _recipeID;
-  final String _docID;
-  final Timestamp _ctime;
+  @HiveField(0)
+  int _docID;
+  @HiveField(1)
+  final String _ctime;
+  @HiveField(2)
   final String _name;
+  @HiveField(3)
   final List<ShoppingList> _shplist;
 
-  const RootList(this._docID, this._ctime, this._name, this._shplist );
+  RootList(this._docID, this._ctime, this._name, this._shplist );
 
-  String get docID => _docID;
+  int get docID => _docID;
 
-  Timestamp get ctime => _ctime; //  String get uID => _uID;
+
+  set docID(int value) {
+    _docID = value;
+  }
+
+  String get ctime => _ctime; //  String get uID => _uID;
 //  String get _profilePic => _profilePicUrl;
 
 
@@ -42,6 +54,9 @@ class RootList extends Equatable{
   String get name => _name;
 
   List<ShoppingList> get shplist => _shplist;
+
+
+
 
 
 }

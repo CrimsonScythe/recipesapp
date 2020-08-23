@@ -17,8 +17,9 @@ class ShoppingListStateInitial extends ShoppingListState {
 class RecipesListLoaded extends ShoppingListState {
 
   final List<Recipe> recipesList;
+  final List<String> ingList;
 
-  RecipesListLoaded(this.recipesList);
+  RecipesListLoaded(this.recipesList, this.ingList);
 
   @override
   // TODO: implement props

@@ -17,10 +17,16 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
 //      event.shplists
 
       final List<Recipe> recipesList = await _repository.getRecipesList(event.shplists);
+      final List<String> ingList = _repository.filterIngredients(event.shplists);
 
-      yield RecipesListLoaded(recipesList);
+      yield RecipesListLoaded(recipesList, ingList);
 
     }
+
+//    if (event is RemoveIngredient) {
+//      _repository.remove(uID, recipeID)
+//
+//    }
 
 
 

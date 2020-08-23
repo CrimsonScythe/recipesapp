@@ -1,11 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:recipes/src/blocs/detailRecipes/detailrecipe_bloc.dart';
-import 'package:recipes/src/blocs/detailRecipes/detailrecipe_state.dart';
 import 'package:recipes/src/blocs/dialoglists/dialoglists_bloc.dart';
 import 'package:recipes/src/blocs/dialoglists/dialoglists_event.dart';
 import 'package:recipes/src/blocs/dialoglists/dialoglists_state.dart';
@@ -15,8 +12,6 @@ import 'package:recipes/src/blocs/shopping/shopping_state.dart';
 import 'package:recipes/src/blocs/textform/textform_bloc.dart';
 import 'package:recipes/src/blocs/textform/textform_event.dart';
 import 'package:recipes/src/blocs/textform/textform_state.dart';
-import 'package:recipes/src/cubits/dialog_cubit.dart';
-import 'package:recipes/src/cubits/shopping_cubit.dart';
 import 'package:recipes/src/models/recipe.dart';
 import 'package:recipes/src/widgets/minus_widget.dart';
 import 'package:recipes/src/widgets/plus_widget.dart';
@@ -159,10 +154,15 @@ class RecipeDetailScreenState extends State<RecipeDetailScreen> {
                     title: Text(widget.recipe.title),
                     background: Hero(
                       tag: widget.recipe.id,
-                      child: Image.file(
+                      child:
+                          widget.recipe.img.contains(new RegExp(r'(http)|(https)', caseSensitive: false))?
+                              Image.network(widget.recipe.img, fit: BoxFit.cover,)
+                              :
+                      Image.file(
                         new File(widget.recipe.img),
                         fit: BoxFit.cover,
                       ),
+
                     )),
               )
 //            SliverAppBar(
@@ -336,7 +336,11 @@ class RecipeDetailScreenState extends State<RecipeDetailScreen> {
 
                       return FlatButton(onPressed: () {
                         /// add item to selected list
-                        BlocProvider.of<DialogListsBloc>(context).add(AddToList(rootState.keys, dialogstate.docID ,widget.recipe.id));
+                        BlocProvider.of<DialogListsBloc>(context).add(
+                          AddToListLocal(rootState.keys, dialogstate.docID, widget.recipe.id)
+//                            AddToList(rootState.keys, dialogstate.docID ,widget.recipe.id)
+
+                        );
                         Navigator.pop(context);
                         }, child: Text('OK'),);
 
@@ -349,9 +353,10 @@ class RecipeDetailScreenState extends State<RecipeDetailScreen> {
                                 (innerstate as ListNameState).name.length==0?
                                 null :
                                     () {
-                                  BlocProvider.of<DialogListsBloc>(context).add((
-                                      CreateListAndAdd((innerstate as ListNameState).name, rootState.keys, widget.recipe.id)
-                                  ));
+                                  BlocProvider.of<DialogListsBloc>(context).add(
+                                  CreateListAndAddLocal((innerstate as ListNameState).name, rootState.keys, widget.recipe.id)
+//                                      CreateListAndAdd((innerstate as ListNameState).name, rootState.keys, widget.recipe.id)
+                                  );
                                   Navigator.pop(context);
 //                            BlocProvider.of<ShoppingBloc>(rootContext).add(AddToList((state as IngredientsState).keys, listid, widget.recipe.id));
                                   /// create and post to list

@@ -51,7 +51,7 @@ class ShoppingScreen extends StatelessWidget {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                    Text(DateFormat('dd-MM-yyyy').format(e.ctime.toDate())),
+                                    Text(DateFormat('dd-MM-yyyy').format(DateTime.parse(e.ctime))),
                                     FlatButton.icon(onPressed: (){}, icon: Icon(Icons.edit), label: SizedBox.shrink())
                                     ],
                                   ),

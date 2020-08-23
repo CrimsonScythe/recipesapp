@@ -5,13 +5,17 @@ import 'package:recipes/src/blocs/authentication/authentication_event.dart';
 import 'package:recipes/src/blocs/authentication/authentication_state.dart';
 import 'package:recipes/src/blocs/bloc_observer.dart';
 import 'package:recipes/src/blocs/bottomnav/bottomnav_bloc.dart';
-import 'package:recipes/src/blocs/bottomnav/bottomnav_state.dart';
-import 'package:recipes/src/blocs/dailyRecipes/dailyRecipes_state.dart';
-import 'file:///C:/AndroidStudioProjects/recipes/lib/src/blocs/dailyRecipes/dailyrecipes_bloc.dart';
+import 'package:recipes/src/models/rootlist.dart';
+import 'package:recipes/src/models/shoppinglist.dart';
 import 'package:recipes/src/screens/app_screen.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main() {
+void main() async {
   Bloc.observer = SimpleBlocObserver();
+  await Hive.initFlutter();
+  Hive.registerAdapter(RootListAdapter());
+  Hive.registerAdapter(ShoppingListAdapter());
   runApp(MyApp());
 }
 

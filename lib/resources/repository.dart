@@ -25,6 +25,18 @@ class Repository {
 
   Repository._internal();
 
+  List<String> filterIngredients(List<ShoppingList> shplists) {
+
+    final set = Set<String>();
+
+    shplists.forEach((element) {
+      set.addAll(List<String>.from(element.ingList));
+    });
+
+    return set.toList();
+
+  }
+
   List<String> addIngredient(ingredient) {
     ingredients.add(ingredient);
     return ingredients;
@@ -55,16 +67,26 @@ class Repository {
     _firestoreProvider.addUser(user);
 
   /// add to existing shopping list
-  Future<void> addtoShoppingList(uID, list, listID, recipeID) =>
-  _firestoreProvider.addtoShoppingList(uID, listID, recipeID, list);
+//  Future<void> addtoShoppingList(uID, list, listID, recipeID) =>
+//  _firestoreProvider.addtoShoppingList(uID, listID, recipeID, list);
 
   /// get all master/root lists
-  Future<List<RootList>> getShoppingLists(uID) =>
-  _firestoreProvider.getShoppingLists(uID);
+//  Future<List<RootList>> getShoppingLists(uID) =>
+//  _firestoreProvider.getShoppingLists(uID);
+
+  Future<void> addToShoppingListLocal(recipeID, key, list) =>
+  _dataProvider.addToShoppingListLocal(recipeID, key, list);
+
+  Future<int> createShoppingListLocal(name) =>
+  _dataProvider.createShoppingListLocal(name);
+
+  Future<List<RootList>> getShoppingListsLocal() =>
+  _dataProvider.getShoppingListsLocal();
 
   /// create new root shopping list
-  Future<String> createShoppingList(uID, name) =>
-  _firestoreProvider.createShoppingList(uID, name);
+//  Future<String> createShoppingList(uID, name) =>
+//  _firestoreProvider.createShoppingList(uID, name);
+
 
   /// to db
   Future<void> addFavourite(uID, recipeID) =>

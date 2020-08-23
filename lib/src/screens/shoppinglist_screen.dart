@@ -1,11 +1,12 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recipes/src/blocs/detailRecipes/detailrecipe_bloc.dart';
+import 'package:recipes/src/blocs/shopping/shopping_bloc.dart';
 import 'package:recipes/src/blocs/shoppinglist/shoppinglist_bloc.dart';
 import 'package:recipes/src/blocs/shoppinglist/shoppinglist_event.dart';
 import 'package:recipes/src/blocs/shoppinglist/shoppinglist_state.dart';
 import 'package:recipes/src/models/rootlist.dart';
+import 'package:recipes/src/screens/detailrecipe_screen.dart';
 
 class ShoppingListScreen extends StatelessWidget {
 
@@ -25,6 +26,7 @@ class ShoppingListScreen extends StatelessWidget {
               return Center(child: CircularProgressIndicator(),);
             }
             if (state is RecipesListLoaded) {
+
               return Column(
                 children: <Widget>[
                   Container(
@@ -42,7 +44,30 @@ class ShoppingListScreen extends StatelessWidget {
                               child:
                               InkWell(
                                 onTap: (){
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) =>
+                                          MultiBlocProvider(
+                                            providers: [
+                                              BlocProvider<DetailRecipeBloc>(
+                                                create: (_) => DetailRecipeBloc(int.parse(e.serve)),
+                                              ),
+                                              BlocProvider<ShoppingBloc>(
+                                                create: (_) => ShoppingBloc(),
+                                              ),
+//                        BlocProvider<TextFormBloc>(
+//                          create: (_) => TextFormBloc(),
+//                        )
+                                            ],
+                                            child: RecipeDetailScreen(recipe: e,),
+                                          )
+//                    BlocProvider(
+//                        create: (_) => DetailRecipeBloc(int.parse(e.serve)),
+//                        child: RecipeDetailScreen(recipe: e,)
+//                    ),
 
+                                      )
+                                  );
                                 },
                                 child:
                                 Stack(
@@ -81,17 +106,35 @@ class ShoppingListScreen extends StatelessWidget {
                       ).toList(),
 
                     ),
-                  )
+                  ),
+                  Container(
 
-//                  Row(/// show recipe cards
-//                    children:
-//
-//                  ),
-                  /// show ingredients lists
-//                  Column(
-//                    children:
-//                    _rootlist.shplist.map((e) => null).toList(),
-//                  )
+                    child:
+                    ListView(
+                      shrinkWrap: true,
+                      children: state.ingList.map((e) =>
+
+                          Dismissible(
+                              background: Container(color: Colors.red, child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Padding(padding: EdgeInsets.only(left: 10.0), child: Icon(Icons.delete, color: Colors.white,),),Padding(padding: EdgeInsets.only(right: 10.0), child: Icon(Icons.delete, color: Colors.white,),)],),),
+                              key: Key(e),
+                              onDismissed: (direction) {
+
+                                BlocProvider.of<ShoppingListBloc>(context).add(RemoveIngredient(e));
+                                // todo should wait before showing snackbar but ok
+                                Scaffold.of(context)
+                                    .showSnackBar(SnackBar(content: Text('$e removed')));
+                              },
+                              child: ListTile(
+                                leading: Image.asset('assets/ing_images/004-fish.png'),
+                                title: Text(e),
+                                onTap: () {},
+                              )
+                          )
+
+                      )
+                          .toList(),
+                    ),
+                  )
                 ],
               );
             }
