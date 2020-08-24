@@ -30,9 +30,10 @@ class ParseShoppingLists extends ShoppingListEvent {
 
 class RemoveIngredient extends ShoppingListEvent {
 
+  final int key;
   final String ingredient;
 
-  RemoveIngredient(this.ingredient);
+  RemoveIngredient(this.ingredient, this.key);
 
   @override
   // TODO: implement props

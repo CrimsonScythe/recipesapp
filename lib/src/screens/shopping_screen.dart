@@ -52,7 +52,17 @@ class ShoppingScreen extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                     Text(DateFormat('dd-MM-yyyy').format(DateTime.parse(e.ctime))),
-                                    FlatButton.icon(onPressed: (){}, icon: Icon(Icons.edit), label: SizedBox.shrink())
+                                    FlatButton.icon(onPressed: (){
+
+//                                      Navigator.push(context,
+//                                          MaterialPageRoute(builder: (context)=>
+//                                              BlocProvider(create: (_) => ,
+//                                                child: ,
+//                                              )
+//                                          )
+//                                      );
+
+                                    }, icon: Icon(Icons.edit), label: SizedBox.shrink())
                                     ],
                                   ),
                                   Container(

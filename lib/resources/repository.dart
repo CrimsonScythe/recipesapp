@@ -117,6 +117,9 @@ class Repository {
   _firestoreProvider.getFavourites(uID);
 
 
+  Future<void> removeIngredientLocal(key, ing) =>
+  _dataProvider.deleteIngredient(key, ing);
+
 
   Future<User> logInAnon() =>
       _firestoreProvider.logInAnon();

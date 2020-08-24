@@ -29,6 +29,22 @@ class DataProvider {
     return File('$path/counter.json');
   }
 
+  Future<void> deleteIngredient(key, ing) async {
+
+    var box = await Hive.openBox<RootList>('shopping');
+    final root = await box.get(key);
+
+    root.shplist.forEach((shplist) {
+
+      shplist.ingList.removeWhere((element) => element==ing);
+
+    });
+
+    final newRoot = root;
+    box.put(key, newRoot);
+
+  }
+
   Future<void> addToShoppingListLocal(recipeID, key, list) async {
 
     var box = await Hive.openBox<RootList>('shopping');
@@ -128,6 +144,8 @@ class DataProvider {
 
 
   }
+
+
 
   Future<bool> deleteFavourite(recipeID) async {
     List<String> strList;

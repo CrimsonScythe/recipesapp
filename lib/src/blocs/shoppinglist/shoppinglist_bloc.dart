@@ -23,10 +23,10 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
 
     }
 
-//    if (event is RemoveIngredient) {
-//      _repository.remove(uID, recipeID)
-//
-//    }
+    if (event is RemoveIngredient) {
+      _repository.removeIngredientLocal(event.key, event.ingredient);
+
+    }
 
 
 

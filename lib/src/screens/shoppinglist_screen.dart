@@ -119,7 +119,7 @@ class ShoppingListScreen extends StatelessWidget {
                               key: Key(e),
                               onDismissed: (direction) {
 
-                                BlocProvider.of<ShoppingListBloc>(context).add(RemoveIngredient(e));
+                                BlocProvider.of<ShoppingListBloc>(context).add(RemoveIngredient(e, _rootlist.docID));
                                 // todo should wait before showing snackbar but ok
                                 Scaffold.of(context)
                                     .showSnackBar(SnackBar(content: Text('$e removed')));
