@@ -22,6 +22,13 @@ class DailyRecipesBloc extends Bloc<dRecipesEvent, DailyRecipesState> {
         try {
           /// get recipes
           final listRecipes = await loadRecipes();
+          /// load ingredientslist for shoppingcart
+          try{
+            await _repository.loadIngredients();
+          } catch(e){
+            print(e);
+          }
+
           /// get favourites
           // todo: favourites are not actually used, so no need to return?
           final favourites = await _repository.getFavouritesSharedPref();

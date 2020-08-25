@@ -29,6 +29,40 @@ class DataProvider {
     return File('$path/counter.json');
   }
 
+  Future<List<ShoppingList>> getShoppingListsLocalFromRoot(key) async {
+
+    var box = await Hive.openBox<RootList>('shopping');
+    final root = await box.get(key);
+    return root.shplist;
+
+  }
+
+  Future<void> addIngredient(key, ing) async {
+
+    var box = await Hive.openBox<RootList>('shopping');
+    final root = await box.get(key);
+    root.shplist[0].ingList.add(ing);
+//    var exists = false;
+//
+//    root.shplist.forEach((shplst) {
+//      if (shplst.recipeID==''){
+//        shplst.ingList.add(ing);
+//        exists=true;
+//      }
+//    });
+//
+//    if (!exists){
+//      final lst = new List<String>();
+//      lst.add(ing);
+//      root.shplist.add(ShoppingList('', DateTime.now().toString(), lst));
+//    }
+
+
+    final newRoot = root;
+    box.put(key, newRoot);
+
+  }
+
   Future<void> deleteIngredient(key, ing) async {
 
     var box = await Hive.openBox<RootList>('shopping');

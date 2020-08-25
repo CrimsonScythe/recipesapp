@@ -1,10 +1,13 @@
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recipes/resources/repository.dart';
 import 'package:recipes/src/blocs/detailRecipes/detailrecipe_bloc.dart';
 import 'package:recipes/src/blocs/shopping/shopping_bloc.dart';
 import 'package:recipes/src/blocs/shoppinglist/shoppinglist_bloc.dart';
 import 'package:recipes/src/blocs/shoppinglist/shoppinglist_event.dart';
 import 'package:recipes/src/blocs/shoppinglist/shoppinglist_state.dart';
+import 'package:recipes/src/models/ingredients.dart';
 import 'package:recipes/src/models/rootlist.dart';
 import 'package:recipes/src/screens/detailrecipe_screen.dart';
 
@@ -12,12 +15,14 @@ class ShoppingListScreen extends StatelessWidget {
 
   final RootList _rootlist;
 
+  Repository _repository= Repository();
   ShoppingListScreen(this._rootlist);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_rootlist.name),),
+        resizeToAvoidBottomPadding: false,
+        appBar: AppBar(title: Text(_rootlist.name),),
       body: BlocBuilder<ShoppingListBloc, ShoppingListState>(
           builder: (context, state) {
 
@@ -26,7 +31,8 @@ class ShoppingListScreen extends StatelessWidget {
               return Center(child: CircularProgressIndicator(),);
             }
             if (state is RecipesListLoaded) {
-
+              print('yolo');
+              state.ingList.forEach((element) {print(element);});
               return Column(
                 children: <Widget>[
                   Container(
@@ -108,6 +114,59 @@ class ShoppingListScreen extends StatelessWidget {
                     ),
                   ),
                   Container(
+                    padding: EdgeInsets.all(15.0),
+                    child:
+                    AutoCompleteTextField<Ingredients>(
+                      decoration: new InputDecoration(
+                          suffixIcon:
+                          FlatButton(child: Text('Add'),onPressed: (){
+//                            BlocProvider.of<ShoppingListBloc>(context)
+//                                .add(AddIngredient(item.name, _rootlist.docID, _rootlist.shplist));
+                          },)
+//                          FlatButton(
+//                            onPressed: () {
+//
+//                            },
+//                            child: new Icon(
+//                              Icons.add,
+//                              color: Colors.white,
+//                              size: 15.0,
+//                            ),
+//                            shape: new CircleBorder(),
+//                            color: Colors.blue,
+//                          )
+                      ),
+                      key: key,
+                      suggestions: _repository.ingredientsList,
+                      itemBuilder: (context, item){
+                        return ListTile(
+                          title: Text(item.name),
+                        );
+//                        return Row(
+//                          children: [
+//                            Icon(Icons.add),
+//                            Text(item.name, style: TextStyle(fontSize: 20.0),)
+//                          ],
+//                        );
+                      },
+                      itemSorter: (a, b){
+                        return a.name.compareTo(b.name);
+                      },
+                      itemFilter: (item, query){
+                        return item.name.toLowerCase().startsWith(query.toLowerCase());
+                      },
+                      itemSubmitted: (item) {
+                        final ls = state.recipesList;
+                        BlocProvider.of<ShoppingListBloc>(context)
+                            .add(AddIngredient(item.name, _rootlist.docID, ls, _rootlist.shplist));
+
+//                            .add(AddIngredient(item.name, _rootlist.docID, _rootlist.shplist));
+                      },
+                      clearOnSubmit: true,
+
+                    ),
+                  ),
+                  Container(
 
                     child:
                     ListView(
@@ -141,6 +200,11 @@ class ShoppingListScreen extends StatelessWidget {
             return Center(child: CircularProgressIndicator(),);
           }
       ),
+//      floatingActionButton: FloatingActionButton(
+//          child: Icon(Icons.add),
+//          onPressed: (){}
+//      ),
+
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:recipes/src/models/recipe.dart';
 import 'package:recipes/src/models/shoppinglist.dart';
 
 abstract class ShoppingListEvent extends Equatable {
@@ -21,6 +22,22 @@ class ParseShoppingLists extends ShoppingListEvent {
   final List<ShoppingList> shplists;
 
   ParseShoppingLists(this.shplists);
+
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+
+}
+
+class AddIngredient extends ShoppingListEvent {
+
+  final int key;
+  final String ingredient;
+  final List<Recipe> recipesList;
+  final List<ShoppingList> shplists;
+
+
+  AddIngredient(this.ingredient, this.key, this.recipesList, this.shplists);
 
   @override
   // TODO: implement props

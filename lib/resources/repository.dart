@@ -1,8 +1,12 @@
 
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:recipes/resources/data_provider.dart';
 import 'package:recipes/resources/firestore_provider.dart';
+import 'package:recipes/src/models/ingredients.dart';
 import 'package:recipes/src/models/recipe.dart';
 import 'package:recipes/src/models/rootlist.dart';
 import 'package:recipes/src/models/shoppinglist.dart';
@@ -18,12 +22,24 @@ class Repository {
   User user;
   List<String> favouritesList;
   List<String> ingredients = new List<String>();
+  List<Ingredients> ingredientsList = new List<Ingredients>();
 
   factory Repository() {
     return _repository;
   }
 
   Repository._internal();
+
+  loadIngredients() async {
+
+    String jsonString = await rootBundle.loadString('assets/ingredients.json');
+    Map ingMap = jsonDecode(jsonString);
+    var count = ingMap['tags'] as List;
+    for (int i =0; i<count.length; i++){
+      ingredientsList.add(Ingredients.fromJson(count[i]));
+    }
+
+  }
 
   List<String> filterIngredients(List<ShoppingList> shplists) {
 
@@ -83,6 +99,9 @@ class Repository {
   Future<List<RootList>> getShoppingListsLocal() =>
   _dataProvider.getShoppingListsLocal();
 
+  Future<List<ShoppingList>> getShoppingListsLocalFromRoot(rootKey) =>
+  _dataProvider.getShoppingListsLocalFromRoot(rootKey);
+
   /// create new root shopping list
 //  Future<String> createShoppingList(uID, name) =>
 //  _firestoreProvider.createShoppingList(uID, name);
@@ -120,6 +139,9 @@ class Repository {
   Future<void> removeIngredientLocal(key, ing) =>
   _dataProvider.deleteIngredient(key, ing);
 
+
+  Future<void> addIngredientLocal(key, ing) =>
+  _dataProvider.addIngredient(key, ing);
 
   Future<User> logInAnon() =>
       _firestoreProvider.logInAnon();

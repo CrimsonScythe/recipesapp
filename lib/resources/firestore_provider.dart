@@ -33,8 +33,13 @@ class FirestoreProvider{
 
   Future<List<Recipe>> getRecipesList(List<ShoppingList> shplists) async {
 
+//    shplists.removeWhere((element) => element.recipeID=='');
+
     List<Recipe> recipesList = new List(shplists.length);
+
+
     for (int i =0; i<shplists.length; i++) {
+//      if (shplists[i].recipeID==''){continue;}
       DocumentSnapshot docSnap = await _firestore.document(shplists[i].recipeID).get();
       var imgUrl = docSnap.data['img'];
       if (!imgUrl.contains(new RegExp(r'(http)|(https)', caseSensitive: false))){

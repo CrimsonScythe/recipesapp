@@ -1,12 +1,21 @@
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:recipes/src/models/ingredients.dart';
 import 'package:recipes/src/models/recipe.dart';
 import 'package:recipes/src/models/rootlist.dart';
 
-abstract class ShoppingListState extends Equatable {
+abstract class ShoppingListState{
   const ShoppingListState();
 }
 
 class ShoppingListStateInitial extends ShoppingListState {
+//
+//  final GlobalKey<AutoCompleteTextFieldState<Ingredients>> key;
+//
+//  ShoppingListStateInitial(this.key);
+
+
 
   @override
   // TODO: implement props
