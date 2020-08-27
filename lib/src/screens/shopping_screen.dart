@@ -5,7 +5,9 @@ import 'package:recipes/src/blocs/shoppinglist/shoppinglist_bloc.dart';
 import 'package:recipes/src/blocs/shoppingscreen/shoppingscreen_bloc.dart';
 import 'package:recipes/src/blocs/shoppingscreen/shoppingscreen_event.dart';
 import 'package:recipes/src/blocs/shoppingscreen/shoppingscreen_state.dart';
+import 'package:recipes/src/blocs/textform/textform_bloc.dart';
 import 'package:recipes/src/models/rootlist.dart';
+import 'package:recipes/src/screens/editlist_screen.dart';
 import 'package:recipes/src/screens/shoppinglist_screen.dart';
 
 class ShoppingScreen extends StatelessWidget {
@@ -14,9 +16,9 @@ class ShoppingScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Shopping'),),
       body: BlocBuilder<ShoppingScreenBloc, ShoppingScreenState>(
-          builder: (context, state){
+          builder: (rootcontext, state){
             if (state is ShoppingStateInitial) {
-              BlocProvider.of<ShoppingScreenBloc>(context).add(GetRootLists());
+              BlocProvider.of<ShoppingScreenBloc>(rootcontext).add(GetRootLists());
               return Center(child: CircularProgressIndicator(),);
             }
             if (state is RootListsNotExist) {
@@ -37,8 +39,20 @@ class ShoppingScreen extends StatelessWidget {
 
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (context)=>
-                                      BlocProvider(create: (_) => ShoppingListBloc(),
-                                        child: ShoppingListScreen(e),
+//                                      MultiBlocProvider(
+//                                        providers: [
+//                                          BlocProvider<ShoppingListBloc>(
+//                                            create: (_) => ShoppingListBloc()
+//                                          ),
+//                                          BlocProvider<ShoppingScreenBloc>(
+//                                            create: (_) => BlocProvider.of<ShoppingScreenBloc>(context),
+//                                          )
+//                                        ],
+//                                        child: ShoppingListScreen(e),
+//                                      )
+                                      BlocProvider(
+                                        create: (_) => ShoppingListBloc(),
+                                        child: ShoppingListScreen(e, BlocProvider.of<ShoppingScreenBloc>(rootcontext)),
                                       )
                                   )
                               );
@@ -56,11 +70,29 @@ class ShoppingScreen extends StatelessWidget {
 
 //                                      Navigator.push(context,
 //                                          MaterialPageRoute(builder: (context)=>
-//                                              BlocProvider(create: (_) => ,
-//                                                child: ,
-//                                              )
+//                                              EditListScreen(BlocProvider.of<ShoppingScreenBloc>(rootcontext))
 //                                          )
 //                                      );
+
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) =>
+                                              MultiBlocProvider(
+                                                  providers: [
+                                                    BlocProvider<ShoppingListBloc>(
+                                                        create: (_) => ShoppingListBloc()
+                                                    ),
+                                                    BlocProvider<TextFormBloc>(
+                                                      create: (_) => TextFormBloc(),
+                                                    )
+                                                  ],
+                                                  child: EditListScreen(e, BlocProvider.of<ShoppingScreenBloc>(rootcontext)),
+                                              )
+//                                              BlocProvider(
+//                                                create: (_) => ShoppingListBloc(),
+//                                                child: EditListScreen(e, BlocProvider.of<ShoppingScreenBloc>(rootcontext)),
+//                                              )
+                                          )
+                                      );
 
                                     }, icon: Icon(Icons.edit), label: SizedBox.shrink())
                                     ],

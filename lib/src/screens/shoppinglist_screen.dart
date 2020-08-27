@@ -7,6 +7,8 @@ import 'package:recipes/src/blocs/shopping/shopping_bloc.dart';
 import 'package:recipes/src/blocs/shoppinglist/shoppinglist_bloc.dart';
 import 'package:recipes/src/blocs/shoppinglist/shoppinglist_event.dart';
 import 'package:recipes/src/blocs/shoppinglist/shoppinglist_state.dart';
+import 'package:recipes/src/blocs/shoppingscreen/shoppingscreen_bloc.dart';
+import 'package:recipes/src/blocs/shoppingscreen/shoppingscreen_event.dart';
 import 'package:recipes/src/models/ingredients.dart';
 import 'package:recipes/src/models/rootlist.dart';
 import 'package:recipes/src/screens/detailrecipe_screen.dart';
@@ -14,15 +16,24 @@ import 'package:recipes/src/screens/detailrecipe_screen.dart';
 class ShoppingListScreen extends StatelessWidget {
 
   final RootList _rootlist;
+  final ShoppingScreenBloc _bloc;
 
   Repository _repository= Repository();
-  ShoppingListScreen(this._rootlist);
+  ShoppingListScreen(this._rootlist, this._bloc);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomPadding: false,
-        appBar: AppBar(title: Text(_rootlist.name),),
+        appBar: AppBar(title: Text(_rootlist.name),
+          actions: [
+            IconButton(icon: Icon(Icons.delete), onPressed: (){
+              BlocProvider.of<ShoppingListBloc>(context).add(DeleteList(_rootlist.docID));
+              _bloc.add(RefreshLists());
+              Navigator.pop(context);
+            })
+          ],
+        ),
       body: BlocBuilder<ShoppingListBloc, ShoppingListState>(
           builder: (context, state) {
 
@@ -166,7 +177,7 @@ class ShoppingListScreen extends StatelessWidget {
 
                     ),
                   ),
-                  Container(
+                  Expanded(
 
                     child:
                     ListView(

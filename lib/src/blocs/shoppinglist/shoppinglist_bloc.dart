@@ -27,7 +27,16 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
     }
 
     if (event is RemoveIngredient) {
+
       _repository.removeIngredientLocal(event.key, event.ingredient);
+
+      /// must do this to get updated root
+      final shplists = await _repository.getShoppingListsLocalFromRoot(event.key);
+      final List<String> ingList = _repository.filterIngredients(shplists);
+      final List<Recipe> recipesList = await _repository.getRecipesList(shplists);
+
+
+      yield RecipesListLoaded(recipesList, ingList);
 
     }
 
@@ -44,7 +53,13 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
       yield RecipesListLoaded(event.recipesList, ingList);
     }
 
+    if (event is DeleteList) {
+      _repository.deleteShoppingListLocal(event.key);
+    }
 
+    if (event is RenameList) {
+      _repository.renameShoppingListLocal(event.key, event.name);
+    }
 
   }
 

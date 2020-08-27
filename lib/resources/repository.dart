@@ -82,6 +82,12 @@ class Repository {
   Future<void> addUser(user) =>
     _firestoreProvider.addUser(user);
 
+  void deleteShoppingListLocal(key) =>
+  _dataProvider.deleteShoppingListLocal(key);
+
+  void renameShoppingListLocal(key, name) =>
+  _dataProvider.renameShoppingListLocal(key, name);
+
   /// add to existing shopping list
 //  Future<void> addtoShoppingList(uID, list, listID, recipeID) =>
 //  _firestoreProvider.addtoShoppingList(uID, listID, recipeID, list);

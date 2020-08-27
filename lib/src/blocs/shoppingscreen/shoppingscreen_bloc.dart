@@ -24,6 +24,11 @@ class ShoppingScreenBloc extends Bloc<ShoppingScreenEvent, ShoppingScreenState> 
       }
 
     }
+    if (event is RefreshLists) {
+
+      yield ShoppingStateInitial();
+
+    }
 
 
 

@@ -57,3 +57,30 @@ class RemoveIngredient extends ShoppingListEvent {
   List<Object> get props => throw UnimplementedError();
 
 }
+
+class DeleteList extends ShoppingListEvent {
+
+  final int key;
+
+  DeleteList(this.key);
+
+
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+
+}
+
+class RenameList extends ShoppingListEvent {
+
+  final int key;
+  final String name;
+
+  RenameList(this.key, this.name);
+
+
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+
+}

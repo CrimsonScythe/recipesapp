@@ -74,8 +74,12 @@ class DataProvider {
 
     });
 
+    root.shplist.removeWhere((element) => element.ingList.length==0);
+
     final newRoot = root;
     box.put(key, newRoot);
+
+
 
   }
 
@@ -102,6 +106,27 @@ class DataProvider {
     });
 
     return rootLists;
+
+  }
+
+  Future<void> deleteShoppingListLocal(key) async {
+    var box = await Hive.openBox<RootList>('shopping');
+    await box.delete(key);
+  }
+
+  Future<void> renameShoppingListLocal(key, name) async {
+
+    var box = await Hive.openBox<RootList>('shopping');
+    final templist = await box.get(key);
+
+    final ctime = templist.ctime;
+    final shplist = templist.shplist;
+    final docid = templist.docID;
+
+    final newRoot = RootList(docid, ctime, name, shplist);
+
+    await box.delete(key);
+    await box.put(key, newRoot);
 
   }
 

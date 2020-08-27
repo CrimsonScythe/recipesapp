@@ -58,5 +58,4 @@ class RootList extends Equatable{
 
 
 
-
 }
