@@ -48,11 +48,11 @@ class DailyRecipesWidget extends StatelessWidget {
                         BlocProvider<ShoppingBloc>(
                           create: (_) => ShoppingBloc(),
                         ),
-//                        BlocProvider<TextFormBloc>(
-//                          create: (_) => TextFormBloc(),
-//                        )
+                        BlocProvider<FavouritesBloc>(
+                          create: (_) => FavouritesBloc(),
+                        )
                       ],
-                      child: RecipeDetailScreen(recipe: e,),
+                      child: RecipeDetailScreen(e,null),
                     )
 //                    BlocProvider(
 //                        create: (_) => DetailRecipeBloc(int.parse(e.serve)),

@@ -40,6 +40,11 @@ class DialogListsBloc extends Bloc<DialogListsEvent, DialogListsState> {
 
     }
 
+    if (event is CreateList) {
+      await _repository.createShoppingListLocal(event.name);
+//      yield AddedToList();
+    }
+
 //    if (event is CreateListAndAdd) {
 //
 //      final listid = await _repository.createShoppingList(_repository.user.uID, event.name);

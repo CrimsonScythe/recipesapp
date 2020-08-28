@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recipes/resources/repository.dart';
 import 'package:recipes/src/blocs/detailRecipes/detailrecipe_bloc.dart';
+import 'package:recipes/src/blocs/favourites/favourites_bloc.dart';
 import 'package:recipes/src/blocs/shopping/shopping_bloc.dart';
 import 'package:recipes/src/blocs/shoppinglist/shoppinglist_bloc.dart';
 import 'package:recipes/src/blocs/shoppinglist/shoppinglist_event.dart';
@@ -72,11 +73,11 @@ class ShoppingListScreen extends StatelessWidget {
                                               BlocProvider<ShoppingBloc>(
                                                 create: (_) => ShoppingBloc(),
                                               ),
-//                        BlocProvider<TextFormBloc>(
-//                          create: (_) => TextFormBloc(),
-//                        )
+                                              BlocProvider<FavouritesBloc>(
+                                                create: (_) => FavouritesBloc(),
+                                              )
                                             ],
-                                            child: RecipeDetailScreen(recipe: e,),
+                                            child: RecipeDetailScreen(e,null),
                                           )
 //                    BlocProvider(
 //                        create: (_) => DetailRecipeBloc(int.parse(e.serve)),

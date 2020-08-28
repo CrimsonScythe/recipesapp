@@ -5,6 +5,7 @@ import 'package:recipes/src/blocs/authentication/authentication_event.dart';
 import 'package:recipes/src/blocs/authentication/authentication_state.dart';
 import 'package:recipes/src/blocs/bloc_observer.dart';
 import 'package:recipes/src/blocs/bottomnav/bottomnav_bloc.dart';
+import 'package:recipes/src/models/favourite.dart';
 import 'package:recipes/src/models/rootlist.dart';
 import 'package:recipes/src/models/shoppinglist.dart';
 import 'package:recipes/src/screens/app_screen.dart';
@@ -16,6 +17,7 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(RootListAdapter());
   Hive.registerAdapter(ShoppingListAdapter());
+  Hive.registerAdapter((FavouriteAdapter()));
   runApp(MyApp());
 }
 

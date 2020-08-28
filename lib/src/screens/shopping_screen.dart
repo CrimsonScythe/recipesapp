@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:recipes/src/blocs/dialoglists/dialoglists_bloc.dart';
+import 'package:recipes/src/blocs/dialoglists/dialoglists_event.dart';
 import 'package:recipes/src/blocs/shoppinglist/shoppinglist_bloc.dart';
 import 'package:recipes/src/blocs/shoppingscreen/shoppingscreen_bloc.dart';
 import 'package:recipes/src/blocs/shoppingscreen/shoppingscreen_event.dart';
 import 'package:recipes/src/blocs/shoppingscreen/shoppingscreen_state.dart';
 import 'package:recipes/src/blocs/textform/textform_bloc.dart';
+import 'package:recipes/src/blocs/textform/textform_event.dart';
+import 'package:recipes/src/blocs/textform/textform_state.dart';
 import 'package:recipes/src/models/rootlist.dart';
 import 'package:recipes/src/screens/editlist_screen.dart';
 import 'package:recipes/src/screens/shoppinglist_screen.dart';
@@ -111,8 +115,79 @@ class ShoppingScreen extends StatelessWidget {
             }
             return Container();
           }),
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            _showDialog(context, BlocProvider.of<ShoppingScreenBloc>(context));
+          }
+      ),
     );
-  }
 
+  }
+  Future<void> _showDialog(context, ShoppingScreenBloc bloc) async {
+
+    await showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext lcontext){
+        return MultiBlocProvider(
+            providers: [
+              BlocProvider<TextFormBloc>(
+                create: (_) => TextFormBloc(),
+              ),
+              BlocProvider<DialogListsBloc>(
+                create: (_) => DialogListsBloc(),
+              )
+            ],
+            child: AlertDialog(
+              title: Text('Create Shopping List'),
+              content: BlocBuilder<TextFormBloc, TextFormState>(
+                builder: (context, textstate) {
+                  return TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'name',
+                      errorText: (textstate as ListNameState).name.length==0
+                        ? 'name empty'
+                          : null,
+                      hintText: 'List created on ' + new DateFormat(
+                          "yyyy-MM-dd").format(DateTime.now()).toString(),
+                    ),
+                    onChanged: (name) =>
+                        BlocProvider.of<TextFormBloc>(context).add(
+                            NameChanged(name)),
+                  );
+                },
+              ),
+              actions: <Widget>[
+                FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('CANCEL'),
+                ),
+                BlocBuilder<TextFormBloc, TextFormState>(
+                  builder: (context, innerstate) {
+                    return FlatButton(
+                        onPressed: (){
+                          /// bloc
+
+                          BlocProvider.of<DialogListsBloc>(context)
+                              .add(CreateList((innerstate as ListNameState).name));
+
+                          bloc.add(RefreshLists());
+
+                          Navigator.pop(context);
+                        },
+                        child: Text('OK')
+                    );
+                  },
+                )
+              ],
+            )
+        );
+      }
+    );
+
+  }
 
 }

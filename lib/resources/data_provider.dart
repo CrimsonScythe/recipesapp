@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:image_downloader/image_downloader.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:recipes/src/models/favourite.dart';
 import 'package:recipes/src/models/recipe.dart';
 import 'package:recipes/src/models/rootlist.dart';
 import 'package:recipes/src/models/shoppinglist.dart';
@@ -17,6 +18,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class DataProvider {
+  Firestore _firestore = Firestore.instance;
 
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
@@ -82,6 +84,115 @@ class DataProvider {
 
 
   }
+
+  Future<List<String>> addFavourite(recipeID) async {
+
+    final lst = List<String>();
+
+
+    var box = await Hive.openBox<Favourite>('fav');
+    final key = await box.add(Favourite(recipeID, DateTime.now().toString(), 0));
+    final tempFav = box.get(key);
+    tempFav.key=key;
+    final newFav = tempFav;
+    await box.put(key, newFav);
+
+    box.keys.forEach((element) {
+      lst.add(box.get(element).recipeID);
+    });
+
+    return lst;
+
+  }
+
+  Future<List<String>> deleteFavourite(recipeID) async {
+
+    var breaks=false;
+    var dkey;
+    var box = await Hive.openBox<Favourite>('fav');
+
+    final lst = List<String>();
+
+    box.keys.forEach((key) {
+
+      if (box.get(key).recipeID==recipeID){
+        dkey=key;
+      }
+
+    });
+
+    await box.delete(dkey);
+
+    box.keys.forEach((element) {
+      lst.add(box.get(element).recipeID);
+    });
+
+    return lst;
+
+  }
+
+  Future<List<String>> getStringFavourites() async {
+
+    var box = await Hive.openBox<Favourite>('fav');
+
+    final favList = new List<String>();
+
+    box.keys.forEach((key) {
+      favList.add(box.get(key).recipeID);
+    });
+
+    return favList;
+
+  }
+
+  Future<List<Recipe>> getFavourites() async {
+    var box = await Hive.openBox<Favourite>('fav');
+
+    final favList = new List<Favourite>();
+
+    box.keys.forEach((key) {
+      favList.add(box.get(key));
+    });
+
+    List<Recipe> recipesList = new List(favList.length);
+
+    for (int i = 0; i < favList.length; i++){
+
+
+      final docSnap = await _firestore.document(favList[i].recipeID).get();
+      var imgUrl = docSnap.data['img'];
+      if (!imgUrl.contains(new RegExp(r'(http)|(https)', caseSensitive: false))){
+        imgUrl='http://'+imgUrl;
+      }
+      recipesList[i]=(Recipe.fromJson(docSnap.data));
+      recipesList[i].img=imgUrl;
+      recipesList[i].id = favList[i].recipeID;
+
+    }
+
+    print('printing...');
+    recipesList.forEach((element) {print(element.title);});
+
+    return recipesList;
+  }
+
+//  Future<bool> existFavourite(recipeID) async {
+//
+//    var box = await Hive.openBox<Favourite>('fav');
+//
+//    box.keys.forEach((key) {
+//      if (box.get(key).recipeID==recipeID){
+//       return true;
+//      }
+//    });
+//
+//    return false;
+//
+//  }
+
+
+
+
 
   Future<void> addToShoppingListLocal(recipeID, key, list) async {
 
@@ -206,7 +317,7 @@ class DataProvider {
 
 
 
-  Future<bool> deleteFavourite(recipeID) async {
+  Future<bool> deleteFavourites(recipeID) async {
     List<String> strList;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('FAV')){

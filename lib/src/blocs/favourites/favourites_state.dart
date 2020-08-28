@@ -27,6 +27,14 @@ class FavouritesRetrieved extends FavouritesState {
 
 }
 
+class NoFavourites extends FavouritesState {
+
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+
+}
+
 class FavouritesFailure extends FavouritesState {
 
   @override

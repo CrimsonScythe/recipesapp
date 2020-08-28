@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:recipes/resources/data_provider.dart';
 import 'package:recipes/resources/firestore_provider.dart';
+import 'package:recipes/src/blocs/favourites/favourites_event.dart';
+import 'package:recipes/src/models/favourite.dart';
 import 'package:recipes/src/models/ingredients.dart';
 import 'package:recipes/src/models/recipe.dart';
 import 'package:recipes/src/models/rootlist.dart';
@@ -114,17 +116,19 @@ class Repository {
 
 
   /// to db
-  Future<void> addFavourite(uID, recipeID) =>
-     _firestoreProvider.setFavourite(uID, recipeID);
+//  Future<void> addFavourite(uID, recipeID) =>
+//     _firestoreProvider.setFavourite(uID, recipeID);
 
 
   /// to shared pref
   Future<void> setFavourite(recipeID) async {
     await _dataProvider.setFavourite(recipeID);
     _repository.favouritesList = await _repository.getFavouritesSharedPref();
+//    _repository.favouritesList=;
   }
-  Future<bool> deleteFavourite(recipeID) async {
-      final bol = await _dataProvider.deleteFavourite(recipeID);
+  Future<bool> deleteFavourites(recipeID) async {
+      final bol = await _dataProvider.deleteFavourites(recipeID);
+//      _repository.favouritesList=;
       _repository.favouritesList = await _repository.getFavouritesSharedPref();
       return bol;
   }
@@ -141,6 +145,18 @@ class Repository {
   Future<List<Recipe>> getFavourites(uID) =>
   _firestoreProvider.getFavourites(uID);
 
+
+  Future<List<String>> addFavouriteLocal(recipeID) =>
+  _dataProvider.addFavourite(recipeID);
+
+  Future<List<String>> removeFavouriteLocal(recipeID) =>
+  _dataProvider.deleteFavourite(recipeID);
+
+  Future<List<Recipe>> getFavouritesLocal() =>
+  _dataProvider.getFavourites();
+
+  Future<List<String>> getStringFavourites() =>
+  _dataProvider.getStringFavourites();
 
   Future<void> removeIngredientLocal(key, ing) =>
   _dataProvider.deleteIngredient(key, ing);

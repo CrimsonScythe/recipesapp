@@ -31,7 +31,9 @@ class DailyRecipesBloc extends Bloc<dRecipesEvent, DailyRecipesState> {
 
           /// get favourites
           // todo: favourites are not actually used, so no need to return?
-          final favourites = await _repository.getFavouritesSharedPref();
+//          final favourites = await _repository.getFavouritesSharedPref();
+          final favourites = await _repository.getStringFavourites();
+          _repository.favouritesList=favourites;
           yield RecipesLoadSuccess(favourites, listRecipes);
         } catch (_) {
           yield RecipesLoadFailure();

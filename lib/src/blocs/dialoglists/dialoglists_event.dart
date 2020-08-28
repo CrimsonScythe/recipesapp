@@ -48,6 +48,21 @@ class CreateListAndAddLocal extends DialogListsEvent {
 
 }
 
+class CreateList extends DialogListsEvent {
+
+
+//  final List<String> keys;
+//  final String recipeID;
+  final String name;
+
+  CreateList(this.name);
+
+  @override
+  // TODO: implement props
+  List<Object> get props => throw UnimplementedError();
+
+}
+
 class CreateListDialogEvent extends DialogListsEvent {
 
   @override
