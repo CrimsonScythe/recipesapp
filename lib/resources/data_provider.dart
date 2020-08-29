@@ -85,6 +85,18 @@ class DataProvider {
 
   }
 
+  Future<void> setFavouritesToHive(List<Favourite> favList) async {
+
+    var box = await Hive.openBox<Favourite>('fav');
+
+    favList.forEach((element) async {
+      await box.put(element.key, element);
+    });
+
+    return;
+
+  }
+
   Future<List<String>> addFavourite(recipeID) async {
 
     final lst = List<String>();
@@ -139,6 +151,24 @@ class DataProvider {
 
     box.keys.forEach((key) {
       favList.add(box.get(key).recipeID);
+    });
+
+    return favList;
+
+  }
+
+  Future<List<Favourite>> getFavoritesLocal() async {
+
+    var box = await Hive.openBox<Favourite>('fav');
+
+    final favList = new List<Favourite>();
+
+    box.keys.forEach((element) {
+      favList.add(box.get(element));
+    });
+
+    favList.sort((a,b){
+      return DateTime.parse(a.ctime).compareTo(DateTime.parse(b.ctime));
     });
 
     return favList;

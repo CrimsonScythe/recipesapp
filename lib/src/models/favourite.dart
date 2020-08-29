@@ -50,6 +50,7 @@ class Favourite extends Equatable{
   }
 
   String get recipeID => _recipeID;
+  String get ctime => _ctime;
 
 
 }

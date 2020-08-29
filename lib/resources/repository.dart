@@ -145,12 +145,20 @@ class Repository {
   Future<List<Recipe>> getFavourites(uID) =>
   _firestoreProvider.getFavourites(uID);
 
+  Future<void> setFavouritesToHive(favList) =>
+  _dataProvider.setFavouritesToHive(favList);
 
   Future<List<String>> addFavouriteLocal(recipeID) =>
   _dataProvider.addFavourite(recipeID);
 
   Future<List<String>> removeFavouriteLocal(recipeID) =>
   _dataProvider.deleteFavourite(recipeID);
+
+  Future<List<Favourite>> getFavouritesFirebase(userID) =>
+  _firestoreProvider.getFavouritesFirebase(userID);
+
+  Future<List<Favourite>> getFavouritesLocalHive() =>
+  _dataProvider.getFavoritesLocal();
 
   Future<List<Recipe>> getFavouritesLocal() =>
   _dataProvider.getFavourites();
@@ -161,6 +169,9 @@ class Repository {
   Future<void> removeIngredientLocal(key, ing) =>
   _dataProvider.deleteIngredient(key, ing);
 
+
+  Future<void> setFavouritesToFirebase(favList, userID) =>
+  _firestoreProvider.setFavouritesToFirebase(favList, userID);
 
   Future<void> addIngredientLocal(key, ing) =>
   _dataProvider.addIngredient(key, ing);

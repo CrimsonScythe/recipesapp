@@ -31,6 +31,59 @@ class FirestoreProvider{
     return _firestore.collection('recipes').document(Constants.MEAT_DOC).collection(today).getDocuments();
   }
 
+
+  Future<List<Favourite>> getFavouritesFirebase(userID) async {
+
+    List<Favourite> lstFav = new List<Favourite>();
+    QuerySnapshot querySnapshot = await _firestore.collection('users').document(userID).collection('favourites').getDocuments();
+    querySnapshot.documents.forEach((fav) {
+      lstFav.add(Favourite(fav.data['reciperef'], fav.data['ctime'], fav.data['key']));
+    });
+
+
+    lstFav.sort((a,b){
+      return DateTime.parse(a.ctime).compareTo(DateTime.parse(b.ctime));
+    });
+
+    return lstFav;
+
+  }
+
+  Future<void> setFavouritesToFirebase(List<Favourite> favList, userID) async {
+
+    final fireLst = List<Favourite>();
+
+    final docs = await _firestore.collection('users').document(userID).collection('favourites').getDocuments();
+
+    docs.documents.forEach((element) {
+      fireLst.add(Favourite.fromJson(element.data));
+    });
+
+
+    /// delete favs not there
+    docs.documents.forEach((element) async {
+      /// remove
+      if (!favList.contains(Favourite.fromJson(element.data))) {
+        await _firestore.collection('users').document(userID).collection('favourites').document(element.documentID).delete();
+      }
+
+    });
+
+
+
+    /// remove from favlist
+    favList.removeWhere((element) => fireLst.contains(element));
+
+    /// rest are new
+    favList.forEach((element) async {
+      await _firestore.collection('users').document(userID).collection('favourites').add(
+          element.toJson()
+      );
+    });
+
+  }
+
+
   Future<List<Recipe>> getRecipesList(List<ShoppingList> shplists) async {
 
 //    shplists.removeWhere((element) => element.recipeID=='');
