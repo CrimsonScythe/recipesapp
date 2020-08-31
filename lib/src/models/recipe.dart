@@ -23,6 +23,9 @@ class Recipe{
   List<dynamic> get ingredients => _ingredients;
   String get time => _timeis;
 
+
+  List<dynamic> get instructions => _instructions;
+
   set img(String value) {
     _img = value;
   }

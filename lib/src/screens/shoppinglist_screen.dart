@@ -77,7 +77,7 @@ class ShoppingListScreen extends StatelessWidget {
                                                 create: (_) => FavouritesBloc(),
                                               )
                                             ],
-                                            child: RecipeDetailScreen(e,null),
+                                            child: RecipeDetailScreen(e,null, int.parse(e.serve)),
                                           )
 //                    BlocProvider(
 //                        create: (_) => DetailRecipeBloc(int.parse(e.serve)),

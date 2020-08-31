@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:quantity/quantity.dart';
+import 'package:recipes/src/blocs/detailRecipes/detailrecipe_bloc.dart';
 import 'package:recipes/src/blocs/dialoglists/dialoglists_bloc.dart';
 import 'package:recipes/src/blocs/dialoglists/dialoglists_event.dart';
 import 'package:recipes/src/blocs/dialoglists/dialoglists_state.dart';
@@ -17,6 +19,7 @@ import 'package:recipes/src/blocs/textform/textform_event.dart';
 import 'package:recipes/src/blocs/textform/textform_state.dart';
 import 'package:recipes/src/models/favourite.dart';
 import 'package:recipes/src/models/recipe.dart';
+import 'package:recipes/src/screens/method_screen.dart';
 import 'package:recipes/src/widgets/minus_widget.dart';
 import 'package:recipes/src/widgets/plus_widget.dart';
 import 'package:recipes/src/widgets/serve_widget.dart';
@@ -24,10 +27,12 @@ import 'package:recipes/src/widgets/serve_widget.dart';
 class RecipeDetailScreen extends StatelessWidget {
   final Recipe recipe;
   final FavouritesBloc _favbloc;
-  RecipeDetailScreen(this.recipe, this._favbloc);
+  final int _defaultServings;
+  RecipeDetailScreen(this.recipe, this._favbloc, this._defaultServings);
 
   @override
   Widget build(BuildContext context) {
+
     if (BlocProvider.of<FavouritesBloc>(context).existFavourite(recipe.id)){
       BlocProvider.of<FavouritesBloc>(context).add(FavouriteSharedAdded());
     } else {
@@ -101,7 +106,7 @@ class RecipeDetailScreen extends StatelessWidget {
                 child: FloatingActionButton.extended(
                     onPressed: () {
                       (state as IngredientsState).keys.length == 0
-                          ? print('Next')
+                          ? _showMethod(context, BlocProvider.of<DetailRecipeBloc>(context).state)
                           : _showDialog(
                           (state as IngredientsState).keys, contexts, state);
 //                    _showDialog(
@@ -128,45 +133,96 @@ class RecipeDetailScreen extends StatelessWidget {
 
   }
 
-  Widget IngredientsGrid(context) {
+  Widget IngredientsGrid(context, state) {
     List<Widget> ingredients = recipe.ingredients
         .map((e) =>
-            BlocBuilder<ShoppingBloc, ShoppingState>(builder: (context, state) {
+             BlocBuilder<DetailRecipeBloc, int>(builder: (context, serveState) {
+//               e.toString().replaceAll(RegExp(r'about\s'), '');
+//               print(serveState);
+               String prefix=e.toString();
+               String suffix='';
+               Fraction fraction;
+
+                             final regcomplex = new RegExp(r'[0-9]\s?(-|–)\s?[0-9]');
+               final regsimple = new RegExp(r'[0-9]');
+//               final regexMatch = regsimple.firstMatch(e.toString()[0]);
+               final regexMatch = regcomplex.firstMatch(e.toString());
+               if (regexMatch==null){
+                final regm = regsimple.firstMatch(e.toString()[0]);
+                if (regm!=null){
+                  print(e.toString());
+                  prefix = (int.parse(e.toString()[0])/_defaultServings * serveState).toStringAsFixed(2);
+                  if (RegExp(r'.00').hasMatch(prefix)){prefix = prefix.split('.')[0];}
+                  suffix = e.toString().substring(1);
+//                  print(prefix);
+                }
+               } else {
+//                 print(e.toString());
+                 final suffi = e.toString().split(regcomplex.stringMatch(e.toString()));
+                 var prefix1 = (int.parse(regcomplex.stringMatch(e.toString())[0])/_defaultServings*serveState).toStringAsFixed(2);
+                 var prefix2 = (int.parse(regcomplex.stringMatch(e.toString())[2])/_defaultServings*serveState).toStringAsFixed(2);
+                 if (RegExp(r'.00').hasMatch(prefix1)){prefix1 = prefix1.split('.')[0];}
+                 if (RegExp(r'.00').hasMatch(prefix2)){prefix2 = prefix2.split('.')[0];}
+                 String prefixreal = prefix1.toString()+'-'+prefix2.toString();
+                 prefix=prefixreal;
+                 suffix=suffi[1];
+
+               }
+               final fracReg = new RegExp(r'[0-9]\s?/\s?[0-9]');
+               final fracreg2=new RegExp(r'½');
+               if (fracReg.hasMatch(e.toString())){
+                 fraction=Fraction(int.parse(fracReg.stringMatch(e.toString())[0]), int.parse(fracReg.stringMatch(e.toString())[2]));
+                 final suffi = e.toString().split(fracReg.stringMatch(e.toString()));
+                 suffix=suffi[1];
+                 var prefix1 = (fraction/_defaultServings*serveState).toDouble().toStringAsFixed(2);
+                 prefix=prefix1;
+               }
+               if (fracreg2.hasMatch(e.toString())){
+                 fraction=Fraction(1,2);
+                 final suffi = e.toString().split(fracreg2.stringMatch(e.toString()));
+                 suffix=suffi[1];
+                 var prefix1 = (fraction/_defaultServings*serveState).toDouble().toStringAsFixed(2);
+                 prefix=prefix1;
+               }
+
 //          state is IngredientsState? print(state.keys):print('no');
-              return GridTile(
-                child: Container(
-                  child: InkWell(
-                    child: state is IngredientsState &&
-                            state.keys.contains(e.toString())
-                        ? Image.asset('assets/ing_images/004-fish.png')
-                        : Image.asset('assets/ing_images/001-jam.png'),
-                    onTap: () {
-                      BlocProvider.of<ShoppingBloc>(context).add(
-                          state is IngredientsState &&
-                                  state.keys.contains(e.toString())
-                              ? DeselectIngredient(e.toString())
-                              : SelectIngredient(e.toString()));
-                    },
-                  ),
-                  margin: EdgeInsets.all(25),
-                ),
-                footer: Text(e.toString(), textAlign: TextAlign.center),
-              );
-            }))
+               return GridTile(
+                 child: Container(
+                   child: InkWell(
+                     child: state is IngredientsState &&
+                         state.keys.contains(e.toString())
+                         ? Image.asset('assets/ing_images/004-fish.png')
+                         : Image.asset('assets/ing_images/001-jam.png'),
+                     onTap: () {
+                       BlocProvider.of<ShoppingBloc>(context).add(
+                           state is IngredientsState &&
+                               state.keys.contains(e.toString())
+                               ? DeselectIngredient(e.toString())
+                               : SelectIngredient(e.toString()));
+                     },
+                   ),
+                   margin: EdgeInsets.all(25),
+                 ),
+                 footer:
+                 Text((prefix + ' ' + suffix), textAlign: TextAlign.center),
+
+               );
+             }))
         .toList();
 
     return Expanded(child:
-        BlocBuilder<ShoppingBloc, ShoppingState>(builder: (context, state) {
-      print('state');
-      state is IngredientsState ? print(state.keys) : print('no work');
-      return GridView.count(
+//        BlocBuilder<ShoppingBloc, ShoppingState>(builder: (context, state) {
+//      print('state');
+//      state is IngredientsState ? print(state.keys) : print('no work');
+      GridView.count(
           padding:
               const EdgeInsets.only(bottom: kFloatingActionButtonMargin + 48),
 //            controller: _scrollController,
           // todo: how to determine corss azid count?
           crossAxisCount: 3,
-          children: ingredients);
-    }));
+          children: ingredients)
+//    })
+    );
   }
 
   Widget localWidget(context) {
@@ -189,10 +245,26 @@ class RecipeDetailScreen extends StatelessWidget {
             ],
           ),
           Text('Ingredients'),
-          IngredientsGrid(context),
+          BlocBuilder<ShoppingBloc, ShoppingState>(builder: (context, state){
+            return IngredientsGrid(context, state);
+          })
+
 //            SizedBox(height: 10.0,)
         ],
       ),
+    );
+  }
+
+  void _showMethod(context, servenum) async {
+//    print(servenum);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) =>
+          BlocProvider<DetailRecipeBloc>(
+              create: (_) => DetailRecipeBloc(servenum),
+              child: MethodScreen(recipe, _defaultServings),
+          ),
+      )
     );
   }
 
@@ -227,7 +299,7 @@ class RecipeDetailScreen extends StatelessWidget {
                 if (dialogstate is ShoppingListNotExists) {
                   return BlocBuilder<TextFormBloc, TextFormState>(
                       builder: (context, textstate) {
-                    print((textstate as ListNameState).name);
+//                    print((textstate as ListNameState).name);
                     return TextFormField(
                       decoration: InputDecoration(
                         labelText: 'name',

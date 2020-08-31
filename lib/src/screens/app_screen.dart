@@ -75,10 +75,10 @@ class AppScreen extends StatelessWidget {
                 icon: Icon(Icons.shopping_basket),
                 title: Text('Shopping')
               ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                title: Text('Profile')
-              )
+//              BottomNavigationBarItem(
+//                icon: Icon(Icons.person),
+//                title: Text('Profile')
+//              )
 //              BottomNavigationBarItem(),
             ],
             onTap: (index) => BlocProvider.of<BottomNavBloc>(context).add(PageTapped(index: index)),

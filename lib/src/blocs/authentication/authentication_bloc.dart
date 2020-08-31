@@ -7,8 +7,6 @@ import 'package:recipes/src/models/favourite.dart';
 import 'package:recipes/src/models/recipe.dart';
 
 
-
-
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc() : super(Unknown());
 
@@ -62,7 +60,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       /// if (app is empty and fstore is not) then download from fstore to app
       /// if both empty then do nothing
 
-      await syncData();
+//      await syncData();
 
       /// return success
       yield Authenticated();

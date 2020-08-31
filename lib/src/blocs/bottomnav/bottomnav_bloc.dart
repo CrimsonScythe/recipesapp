@@ -26,10 +26,10 @@ class BottomNavBloc extends Bloc<BottomNavEvent, BottomNavState> {
         yield ShoppingPageLoaded();
       }
 
-      if (this.currentIndex == 3) {
-        yield ProfilePageLoaded();
-
-      }
+//      if (this.currentIndex == 3) {
+//        yield ProfilePageLoaded();
+//
+//      }
 
     }
 

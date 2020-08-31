@@ -57,7 +57,7 @@ class FavouritesScreen extends StatelessWidget {
                                               create: (_) => FavouritesBloc(),
                                             )
                                           ],
-                                          child: RecipeDetailScreen(e, BlocProvider.of<FavouritesBloc>(bloccontext)),
+                                          child: RecipeDetailScreen(e, BlocProvider.of<FavouritesBloc>(bloccontext), int.parse(e.serve)),
                                         )
 //                    BlocProvider(
 //                        create: (_) => DetailRecipeBloc(int.parse(e.serve)),
