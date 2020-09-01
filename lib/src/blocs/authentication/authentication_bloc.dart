@@ -56,9 +56,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       /// update db with userparams
       await _repository.addUser(user);
 
-      /// if (fstore is empty or app data is more recent(diff)) then upload to fstore from app
-      /// if (app is empty and fstore is not) then download from fstore to app
-      /// if both empty then do nothing
+
 
 //      await syncData();
 

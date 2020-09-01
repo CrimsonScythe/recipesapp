@@ -20,6 +20,7 @@ dependency_overrides:
   analyzer: 0.39.14
 
 dependencies:
+
   flutter:
     sdk: flutter
 

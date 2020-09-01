@@ -4,7 +4,7 @@ class Recipe{
 
   final String _title;
   final String _url;
-  final List<dynamic> _ingredients;
+  List<dynamic> _ingredients;
   final String _serve;
   String _img;
   final List<dynamic> _instructions;
@@ -12,9 +12,11 @@ class Recipe{
   final String _timeis;
   final String _typeis;
   String _id;
+  final List<dynamic> _ingredientsnames;
 
   Recipe(this._title, this._url, this._ingredients, this._serve, this._img,
-      this._instructions, this._nutrition, this._timeis, this._typeis, this._id);
+      this._instructions, this._nutrition, this._timeis, this._typeis, this._id,
+      this._ingredientsnames);
 
   String get id => _id;
   String get img => _img;
@@ -22,6 +24,7 @@ class Recipe{
   String get serve => _serve;
   List<dynamic> get ingredients => _ingredients;
   String get time => _timeis;
+  List<dynamic> get ingredientsnames => _ingredientsnames;
 
 
   List<dynamic> get instructions => _instructions;
@@ -34,6 +37,11 @@ class Recipe{
     _id = value;
   }
 
+
+  set ingredients(List<dynamic> value) {
+    _ingredients = value;
+  }
+
   Recipe.fromJson(Map<String, dynamic> json)
     : _title = json['title'],
      _url = json['url'],
@@ -44,7 +52,8 @@ class Recipe{
   _nutrition = json['nutrition'],
   _id = json['id'],
   _instructions = json['instructions'],
-  _img = json['img'];
+  _img = json['img'],
+  _ingredientsnames=json['ingredientsnames'];
 
   Map<String, dynamic> toJson() =>
       {
@@ -57,7 +66,8 @@ class Recipe{
         'nutrition' : _nutrition,
         'id' : _id,
         'instructions' : _instructions,
-        'img' : _img
+        'img' : _img,
+        'ingredientsnames':_ingredientsnames
       };
 
 }
