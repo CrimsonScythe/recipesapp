@@ -187,17 +187,18 @@ class ShoppingListScreen extends StatelessWidget {
 
                           Dismissible(
                               background: Container(color: Colors.red, child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[Padding(padding: EdgeInsets.only(left: 10.0), child: Icon(Icons.delete, color: Colors.white,),),Padding(padding: EdgeInsets.only(right: 10.0), child: Icon(Icons.delete, color: Colors.white,),)],),),
-                              key: Key(e),
+                              key: Key(e.item1),
                               onDismissed: (direction) {
-
-                                BlocProvider.of<ShoppingListBloc>(context).add(RemoveIngredient(e, _rootlist.docID));
+                                final d=e.item1;
+                                BlocProvider.of<ShoppingListBloc>(context).add(RemoveIngredient(e.item1, _rootlist.docID));
                                 // todo should wait before showing snackbar but ok
                                 Scaffold.of(context)
-                                    .showSnackBar(SnackBar(content: Text('$e removed')));
+                                    .showSnackBar(SnackBar(content: Text('$d removed')));
                               },
                               child: ListTile(
-                                leading: Image.asset('assets/ing_images/004-fish.png'),
-                                title: Text(e),
+//                                leading: Image.asset('assets/ing_images/004-fish.png'),
+                                title: Text(e.item1),
+                                subtitle: Text(e.item2),
                                 onTap: () {},
                               )
                           )

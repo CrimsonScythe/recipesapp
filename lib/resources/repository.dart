@@ -43,15 +43,17 @@ class Repository {
 
   }
 
-  List<String> filterIngredients(List<ShoppingList> shplists) {
+  List<Tuple2<dynamic,dynamic>> filterIngredients(List<ShoppingList> shplists) {
 
     final set = Set<String>();
+    List<Tuple2<dynamic, dynamic>> list = new List<Tuple2<dynamic,dynamic>>();
 
+///remove duplicaes
     shplists.forEach((element) {
-      set.addAll(List<String>.from(element.ingList));
+      list.addAll((element.ingList as List<Tuple2<dynamic,dynamic>>));
     });
 
-    return set.toList();
+    return list;
 
   }
 

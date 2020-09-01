@@ -72,7 +72,7 @@ class DataProvider {
 
     root.shplist.forEach((shplist) {
 
-      shplist.ingList.removeWhere((element) => element==ing);
+      shplist.ingList.removeWhere((element) => element.item1==ing);
 
     });
 

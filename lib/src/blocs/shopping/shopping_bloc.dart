@@ -3,10 +3,11 @@ import 'package:recipes/resources/repository.dart';
 import 'package:recipes/src/blocs/shopping/shopping_event.dart';
 import 'package:recipes/src/blocs/shopping/shopping_state.dart';
 import 'package:recipes/src/models/rootlist.dart';
+import 'package:tuple/tuple.dart';
 
 class ShoppingBloc extends Bloc<ShoppingEvent, ShoppingState> {
   // todo check initial state
-  ShoppingBloc() : super(IngredientsState(new List<String>()));
+  ShoppingBloc() : super(IngredientsState(new List<Tuple2<dynamic, dynamic>>()));
 
   Repository _repository = Repository();
 
@@ -42,7 +43,7 @@ class ShoppingBloc extends Bloc<ShoppingEvent, ShoppingState> {
     }
 
     if (event is ClearList) {
-      yield IngredientsState(new List<String>());
+      yield IngredientsState(new List<Tuple2<dynamic, dynamic>>());
     }
 
   }

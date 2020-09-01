@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:recipes/src/models/ingredients.dart';
 import 'package:recipes/src/models/recipe.dart';
 import 'package:recipes/src/models/rootlist.dart';
+import 'package:tuple/tuple.dart';
 
 abstract class ShoppingListState{
   const ShoppingListState();
@@ -26,7 +27,7 @@ class ShoppingListStateInitial extends ShoppingListState {
 class RecipesListLoaded extends ShoppingListState {
 
   final List<Recipe> recipesList;
-  final List<String> ingList;
+  final List<Tuple2<dynamic,dynamic>> ingList;
 
   RecipesListLoaded(this.recipesList, this.ingList);
 

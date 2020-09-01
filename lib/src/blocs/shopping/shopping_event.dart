@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
+import 'package:tuple/tuple.dart';
 
 abstract class ShoppingEvent extends Equatable {
   const ShoppingEvent();
@@ -23,7 +24,7 @@ abstract class ShoppingEvent extends Equatable {
 
 class CreateListDialogState extends ShoppingEvent{
 
-  final List<String> keys;
+  final List<Tuple2<String, String>> keys;
 
   CreateListDialogState(this.keys);
 
@@ -59,7 +60,7 @@ class ClearList extends ShoppingEvent{
 
 class SelectIngredient extends ShoppingEvent {
 
-  final key;
+  final Tuple2 key;
 
   SelectIngredient(this.key);
 
@@ -72,7 +73,7 @@ class SelectIngredient extends ShoppingEvent {
 
 class DeselectIngredient extends ShoppingEvent {
 
-  final key;
+  final Tuple2 key;
 
   DeselectIngredient(this.key);
 

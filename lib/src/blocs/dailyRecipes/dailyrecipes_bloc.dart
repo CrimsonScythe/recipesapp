@@ -42,7 +42,7 @@ class DailyRecipesBloc extends Bloc<dRecipesEvent, DailyRecipesState> {
           /// here we must get the images for the ingredients
 
           print('prebv');
-          await getIngredientImages(listRecipes);
+//          await getIngredientImages(listRecipes);
           print('WORKSSLJSKGNDGJK');
           yield RecipesLoadSuccess(favourites, listRecipes);
         } catch (_) {
@@ -56,7 +56,6 @@ class DailyRecipesBloc extends Bloc<dRecipesEvent, DailyRecipesState> {
   }
 
   Future<void> getIngredientImages(List<Recipe> recipes) async {
-
 
 
     for (int i=0; i<3; i++){

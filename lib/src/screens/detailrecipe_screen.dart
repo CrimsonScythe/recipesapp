@@ -25,6 +25,7 @@ import 'package:recipes/src/services/SpoonApiService.dart';
 import 'package:recipes/src/widgets/minus_widget.dart';
 import 'package:recipes/src/widgets/plus_widget.dart';
 import 'package:recipes/src/widgets/serve_widget.dart';
+import 'package:tuple/tuple.dart';
 
 
 class RecipeDetailScreen extends StatelessWidget {
@@ -140,32 +141,33 @@ class RecipeDetailScreen extends StatelessWidget {
   }
 
   Widget IngredientsGrid(context, state) {
-    List<Widget> ingredients = recipe.ingredients
+
+    List<Widget> ingredients = recipe.ingredientsnames
         .map((e) =>
              BlocBuilder<DetailRecipeBloc, int>(builder: (context, serveState) {
 
 //               e.toString().replaceAll(RegExp(r'about\s'), '');
 //               print(serveState);
-               String prefix=e.name.toString();
+               String prefix=e['measure'].toString();
                String suffix='';
                Fraction fraction;
 
                              final regcomplex = new RegExp(r'[0-9]\s?(-|–)\s?[0-9]');
                final regsimple = new RegExp(r'[0-9]');
 //               final regexMatch = regsimple.firstMatch(e.toString()[0]);
-               final regexMatch = regcomplex.firstMatch(e.name.toString());
+               final regexMatch = regcomplex.firstMatch(e['measure'].toString());
                if (regexMatch==null){
-                final regm = regsimple.firstMatch(e.name.toString()[0]);
+                final regm = regsimple.firstMatch(e['measure'].toString()[0]);
                 if (regm!=null){
-                  print(e.name.toString());
-                  prefix = (int.parse(e.name.toString()[0])/_defaultServings * serveState).toStringAsFixed(2);
+                  print(e['measure'].toString());
+                  prefix = (int.parse(e['measure'].toString()[0])/_defaultServings * serveState).toStringAsFixed(2);
                   if (RegExp(r'.00').hasMatch(prefix)){prefix = prefix.split('.')[0];}
-                  suffix = e.name.toString().substring(1);
+                  suffix = e['measure'].toString().substring(1);
 //                  print(prefix);
                 }
                } else {
 //                 print(e.toString());
-                 final suffi = e.name.toString().split(regcomplex.stringMatch(e.toString()));
+                 final suffi = e['measure'].toString().split(regcomplex.stringMatch(e['measure'].toString()));
                  var prefix1 = (int.parse(regcomplex.stringMatch(e.name.toString())[0])/_defaultServings*serveState).toStringAsFixed(2);
                  var prefix2 = (int.parse(regcomplex.stringMatch(e.name.toString())[2])/_defaultServings*serveState).toStringAsFixed(2);
                  if (RegExp(r'.00').hasMatch(prefix1)){prefix1 = prefix1.split('.')[0];}
@@ -177,43 +179,48 @@ class RecipeDetailScreen extends StatelessWidget {
                }
                final fracReg = new RegExp(r'[0-9]\s?/\s?[0-9]');
                final fracreg2=new RegExp(r'½');
-               if (fracReg.hasMatch(e.name.toString())){
-                 fraction=Fraction(int.parse(fracReg.stringMatch(e.name.toString())[0]), int.parse(fracReg.stringMatch(e.name.toString())[2]));
-                 final suffi = e.name.toString().split(fracReg.stringMatch(e.name.toString()));
+               if (fracReg.hasMatch(e['measure'].toString())){
+                 fraction=Fraction(int.parse(fracReg.stringMatch(e['measure'].toString())[0]), int.parse(fracReg.stringMatch(e['measure'].toString())[2]));
+                 final suffi = e['measure'].toString().split(fracReg.stringMatch(e['measure'].toString()));
                  suffix=suffi[1];
                  var prefix1 = (fraction/_defaultServings*serveState).toDouble().toStringAsFixed(2);
                  prefix=prefix1;
                }
-               if (fracreg2.hasMatch(e.name.toString())){
+               if (fracreg2.hasMatch(e['measure'].toString())){
                  fraction=Fraction(1,2);
-                 final suffi = e.name.toString().split(fracreg2.stringMatch(e.name.toString()));
+                 final suffi = e['measure'].toString().split(fracreg2.stringMatch(e['measure'].toString()));
                  suffix=suffi[1];
                  var prefix1 = (fraction/_defaultServings*serveState).toDouble().toStringAsFixed(2);
                  prefix=prefix1;
                }
 
 //          state is IngredientsState? print(state.keys):print('no');
-               return GridTile(
-                 child: Container(
-                   child: InkWell(
-                     child: state is IngredientsState &&
-                         state.keys.contains(e.name.toString())
-                         ? Stack(children: [
-                       Image.file(File(e.img)),
-                           Center(child: Container(child: Center(child: Icon(Icons.check),),decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.grey.withAlpha(150)),),),],)
-                         : Image.file(File(e.img)),
+               return ListTile(
+                 title: Text(e['name']),
+                  subtitle: Text(e['measure']),
+                  leading: state is IngredientsState &&
+                         state.keys.contains(Tuple2(e['name'].toString(), e['measure'].toString()))
+                         ? Icon(Icons.check,color: Colors.black,):Icon(Icons.check, color: Colors.grey.withAlpha(100),),
+//                 child: Container(
+//                   child: InkWell(
+//                     child: state is IngredientsState &&
+//                         state.keys.contains(e.name.toString())
+//                         ? Stack(children: [
+//                       Image.file(File(e.img)),
+//                           Center(child: Container(child: Center(child: Icon(Icons.check),),decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.grey.withAlpha(150)),),),],)
+//                         : Image.file(File(e.img)),
                      onTap: () {
                        BlocProvider.of<ShoppingBloc>(context).add(
                            state is IngredientsState &&
-                               state.keys.contains(e.name.toString())
-                               ? DeselectIngredient(e.name.toString())
-                               : SelectIngredient(e.name.toString()));
+                               state.keys.contains(Tuple2(e['name'].toString(), e['measure'].toString()))
+                               ? DeselectIngredient(Tuple2(e['name'].toString(), e['measure'].toString()))
+                               : SelectIngredient(Tuple2(e['name'].toString(), e['measure'].toString())));
                      },
-                   ),
-                   margin: EdgeInsets.all(25),
-                 ),
-                 footer:
-                 Text((prefix + ' ' + suffix), textAlign: TextAlign.center),
+//                   ),
+//                   margin: EdgeInsets.all(25),
+//                 ),
+//                 footer:
+//                 Text((prefix + ' ' + suffix), textAlign: TextAlign.center),
 
                );
              }))
@@ -223,13 +230,14 @@ class RecipeDetailScreen extends StatelessWidget {
 //        BlocBuilder<ShoppingBloc, ShoppingState>(builder: (context, state) {
 //      print('state');
 //      state is IngredientsState ? print(state.keys) : print('no work');
-      GridView.count(
+      ListView (
           padding:
               const EdgeInsets.only(bottom: kFloatingActionButtonMargin + 48),
 //            controller: _scrollController,
           // todo: how to determine corss azid count?
-          crossAxisCount: 3,
-          children: ingredients)
+//          crossAxisCount: 3,
+          children: ingredients
+      )
 //    })
     );
   }

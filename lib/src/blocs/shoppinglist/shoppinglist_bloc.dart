@@ -7,6 +7,7 @@ import 'package:recipes/src/blocs/shoppinglist/shoppinglist_state.dart';
 import 'package:recipes/src/models/ingredients.dart';
 import 'package:recipes/src/models/recipe.dart';
 import 'package:recipes/src/models/rootlist.dart';
+import 'package:tuple/tuple.dart';
 
 class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
   ShoppingListBloc() : super(ShoppingListStateInitial());
@@ -20,7 +21,7 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
 //      event.shplists
 
       final List<Recipe> recipesList = await _repository.getRecipesList(event.shplists);
-      final List<String> ingList = _repository.filterIngredients(event.shplists);
+      final List<Tuple2<dynamic,dynamic>> ingList = _repository.filterIngredients(event.shplists);
 
       yield RecipesListLoaded(recipesList, ingList);
 
@@ -32,7 +33,7 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
 
       /// must do this to get updated root
       final shplists = await _repository.getShoppingListsLocalFromRoot(event.key);
-      final List<String> ingList = _repository.filterIngredients(shplists);
+      final List<Tuple2<dynamic,dynamic>> ingList = _repository.filterIngredients(shplists);
       final List<Recipe> recipesList = await _repository.getRecipesList(shplists);
 
 
@@ -47,7 +48,7 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
 
       /// must do this to get updated root
       final shplists = await _repository.getShoppingListsLocalFromRoot(event.key);
-      final List<String> ingList = _repository.filterIngredients(shplists);
+      final List<Tuple2<dynamic,dynamic>> ingList = _repository.filterIngredients(shplists);
 
 
       yield RecipesListLoaded(event.recipesList, ingList);

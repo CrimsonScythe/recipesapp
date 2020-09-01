@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 import 'package:recipes/src/models/rootlist.dart';
+import 'package:tuple/tuple.dart';
 
 abstract class DialogListsEvent extends Equatable {
   const DialogListsEvent();
@@ -36,7 +37,7 @@ class CreateListAndAdd extends DialogListsEvent {
 class CreateListAndAddLocal extends DialogListsEvent {
 
 
-  final List<String> keys;
+  final List<Tuple2<dynamic,dynamic>> keys;
   final String recipeID;
   final String name;
 
@@ -87,7 +88,7 @@ class onChanged extends DialogListsEvent {
 class AddToListLocal extends DialogListsEvent {
 
 
-  final List<String> keys;
+  final List<Tuple2<dynamic,dynamic>> keys;
   final String recipeID;
   final int key;
 
